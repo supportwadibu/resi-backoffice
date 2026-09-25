@@ -1,26 +1,171 @@
 @import "tailwindcss";
 
+/*
+ * Jetons de couleur. Les composants n'emploient que ces noms (bg-surface,
+ * text-muted, text-accent-green…), jamais une teinte littérale : les deux modes
+ * restent ainsi lisibles sans qu'un écran ait à y penser.
+ *
+ * Deux familles :
+ * - l'interface (fond, texte, boutons) est en noir et blanc, et `primary`
+ *   s'inverse d'un mode à l'autre — bouton noir sur fond clair, blanc sur
+ *   fond noir ;
+ * - les accents (violet, vert, rouge, bleu, ambre) servent aux statistiques,
+ *   icônes et badges. Chacun a une variante `-soft` pour le fond d'une
+ *   pastille ou d'une tuile, avec le ton plein posé dessus. En mode sombre,
+ *   le ton plein s'éclaircit : un violet foncé sur fond noir manquerait de
+ *   contraste.
+ *
+ * `danger` est l'alias sémantique du rouge pour les erreurs : un écran
+ * d'erreur ne doit pas dépendre du choix de couleur d'un graphique.
+ *
+ * Chaque jeton porte ses deux valeurs dans `light-dark(clair, sombre)` ;
+ * `color-scheme` tranche. Sans choix enregistré, `light dark` suit le
+ * système ; `data-theme` sur `<html>` (cookie `resi_theme`, posé par le
+ * layout racine) force l'un des deux. `color-scheme` bascule du même coup les
+ * contrôles natifs : barres de défilement, calendrier des champs date.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light dark;
+
+  --background: light-dark(#fafafa, #000000);
+  --surface: light-dark(#ffffff, #121212);
+  --foreground: light-dark(#0a0a0a, #fafafa);
+  --muted: light-dark(#5f5f66, #a1a1a8);
+  --border: light-dark(#e5e5e8, #27272a);
+  --primary: light-dark(#0a0a0a, #fafafa);
+  --primary-foreground: light-dark(#ffffff, #0a0a0a);
+
+  --accent-violet: light-dark(#6d28d9, #a78bfa);
+  --accent-violet-soft: light-dark(#f3effd, #231a3a);
+  --accent-green: light-dark(#15803d, #4ade80);
+  --accent-green-soft: light-dark(#ecf8f0, #0f2a1a);
+  --accent-red: light-dark(#b42318, #fda29b);
+  --accent-red-soft: light-dark(#fef3f2, #3a1512);
+  --accent-blue: light-dark(#1d4ed8, #93b4fd);
+  --accent-blue-soft: light-dark(#eef3fe, #14203d);
+  --accent-amber: light-dark(#b45309, #fbbf24);
+  --accent-amber-soft: light-dark(#fdf6e9, #33240a);
+
+  /* Texte posé sur une photo assombrie : identique dans les deux modes,
+     puisque le voile noir ne change pas. */
+  --overlay: #000000;
+  --on-overlay: #ffffff;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/*
+ * `dark:` suit la même règle que les jetons : thème sombre choisi, ou
+ * préférence système quand aucun thème clair n'est imposé. Par défaut,
+ * Tailwind ne regarderait que la préférence système.
+ */
+@custom-variant dark {
+  &:where([data-theme="dark"], [data-theme="dark"] *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not([data-theme]), :root:not([data-theme]) *) {
+      @slot;
+    }
+  }
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
   --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-accent-violet: var(--accent-violet);
+  --color-accent-violet-soft: var(--accent-violet-soft);
+  --color-accent-green: var(--accent-green);
+  --color-accent-green-soft: var(--accent-green-soft);
+  --color-accent-red: var(--accent-red);
+  --color-accent-red-soft: var(--accent-red-soft);
+  --color-accent-blue: var(--accent-blue);
+  --color-accent-blue-soft: var(--accent-blue-soft);
+  --color-accent-amber: var(--accent-amber);
+  --color-accent-amber-soft: var(--accent-amber-soft);
+
+  --color-overlay: var(--overlay);
+  --color-on-overlay: var(--on-overlay);
+
+  --color-danger: var(--accent-red);
+  --color-danger-surface: var(--accent-red-soft);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/*
+ * Angles droits partout : l'échelle d'arrondis de Tailwind est retirée, si
+ * bien qu'un `rounded-md` ajouté par habitude ne produit aucun style.
+ */
+@theme {
+  --radius-*: initial;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+/*
+ * Liste déroulante des `<select>`. Native, elle est dessinée par le système
+ * (Segoe UI sous Windows), hors de portée de la police et des jetons. Le
+ * `<select>` personnalisable (`appearance: base-select`) la rend dans la
+ * page : même police, mêmes couleurs, angles droits. Les navigateurs qui ne
+ * le connaissent pas gardent la liste native, sans rien perdre d'autre.
+ *
+ * Hors couche, volontairement : la classe `appearance-none` du composant
+ * `Select` (couche `utilities`) l'emporterait sur une règle de base. Ces
+ * règles ne touchent qu'à `appearance`, à la liste et aux options, que les
+ * classes du composant ne visent pas.
+ */
+@supports (appearance: base-select) {
+  select,
+  ::picker(select) {
+    appearance: base-select;
+  }
+
+  /* Le composant `Select` dessine déjà son chevron. */
+  select::picker-icon {
+    display: none;
+  }
+
+  ::picker(select) {
+    margin-block: 0.25rem;
+    border: 1px solid var(--border);
+    /* Remet à zéro l'arrondi par défaut du navigateur : aucun angle arrondi. */
+    border-radius: 0;
+    background: var(--surface);
+    color: var(--foreground);
+    padding-block: 0.25rem;
+    box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.15);
+  }
+
+  option {
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  option:hover,
+  option:focus-visible {
+    background: var(--background);
+    outline: none;
+  }
+
+  option:checked {
+    font-weight: 500;
+  }
 }
