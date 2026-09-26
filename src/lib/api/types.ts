@@ -453,6 +453,44 @@ export interface RevenuePoint {
   bookings_started: number;
 }
 
+/** Un mois encaissé ou attendu, `AAAA-MM`. */
+export interface MonthAmount {
+  month: string;
+  amount: number;
+  /** Paiements encaissés (passé) ou renouvellements attendus (prévision). */
+  count: number;
+}
+
+/**
+ * Revenu de RESI : les abonnements des propriétaires. `GET /admin/stats/subscriptions`.
+ */
+export interface SubscriptionRevenue {
+  generated_at: string;
+  earned: {
+    total: number;
+    this_month: number;
+    previous_month: number;
+    growth_percent: number | null;
+    series: MonthAmount[];
+  };
+  recurring: {
+    mrr: number;
+    paying_subscribers: number;
+    by_tier: Record<PlanTier, { subscribers: number; mrr: number }>;
+  };
+  /** Renouvellements attendus si chaque abonné payant renouvelle ; à partir du mois en cours. */
+  forecast: {
+    total: number;
+    series: MonthAmount[];
+  };
+  trials: {
+    in_progress: number;
+    ending_within_30_days: number;
+    potential_mrr_min: number;
+    potential_mrr_max: number;
+  };
+}
+
 export interface RevenueSeries {
   months: number;
   /** Du mois le plus ancien au mois en cours. */

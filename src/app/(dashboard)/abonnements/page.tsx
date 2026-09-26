@@ -7,6 +7,7 @@ import { Pagination } from "@/components/pagination";
 import { ScopeHiddenInputs, ScopeNote } from "@/components/scope-note";
 import { Select } from "@/components/select";
 import { PlanTierBadge, STATUS_TONES, SubscriptionStatusBadge } from "@/components/status-badges";
+import { RowActions } from "@/components/icon-button";
 import { Cell, Row, RowLink, Table } from "@/components/table";
 import { apiFetch } from "@/lib/api/client";
 import type { Paginated, Plan, Subscription, SubscriptionStatus } from "@/lib/api/types";
@@ -15,12 +16,15 @@ import { SUBSCRIPTION_STATUS_LABELS, toOptions } from "@/lib/labels";
 import { boolParam, enumParam, pageParam, param } from "@/lib/search-params";
 
 import { CancelSubscription } from "./cancel-subscription";
+import { ExtendSubscription } from "./extend-subscription";
 
 export const metadata: Metadata = { title: "Abonnements" };
 
 const STATUSES = Object.keys(SUBSCRIPTION_STATUS_LABELS) as SubscriptionStatus[];
 /** Statuts que l'API accepte d'annuler. */
 const CANCELLABLE: SubscriptionStatus[] = ["pending", "trial", "active"];
+/** Statuts que l'API accepte de prolonger : un abonnement en cours. */
+const EXTENDABLE: SubscriptionStatus[] = ["trial", "active"];
 
 export default async function AbonnementsPage({ searchParams }: PageProps<"/abonnements">) {
   const params = await searchParams;
@@ -111,7 +115,12 @@ export default async function AbonnementsPage({ searchParams }: PageProps<"/abon
               </Cell>
               <Cell className="whitespace-nowrap tabular-nums">{formatPrice(subscription.amount)}</Cell>
               <Cell className="text-right">
-                {CANCELLABLE.includes(subscription.status) && <CancelSubscription id={subscription.id} />}
+                <RowActions>
+                  {EXTENDABLE.includes(subscription.status) && (
+                    <ExtendSubscription id={subscription.id} endDate={subscription.end_date} />
+                  )}
+                  {CANCELLABLE.includes(subscription.status) && <CancelSubscription id={subscription.id} />}
+                </RowActions>
               </Cell>
             </Row>
           ))}
