@@ -2,6 +2,7 @@ import type {
   BookingStatus,
   FeedbackStatus,
   OwnerStatus,
+  PlanTier,
   PropertyStatus,
   SubscriptionStatus,
 } from "@/lib/api/types";
@@ -9,6 +10,7 @@ import {
   BOOKING_STATUS_LABELS,
   FEEDBACK_STATUS_LABELS,
   OWNER_STATUS_LABELS,
+  PLAN_TIER_LABELS,
   PROPERTY_STATUS_LABELS,
   SUBSCRIPTION_STATUS_LABELS,
 } from "@/lib/labels";
@@ -70,6 +72,15 @@ export const SUBSCRIPTION_TONES: Record<SubscriptionStatus, BadgeTone> = {
   cancelled: T.stopped,
 };
 
+/**
+ * Le forfait complet est « en règle » ; le forfait d'enregistrement n'est ni
+ * arrêté ni hors circuit : il est actif, simplement réduit — bleu.
+ */
+export const PLAN_TIER_TONES: Record<PlanTier, BadgeTone> = {
+  full: T.done,
+  basic: T.upcoming,
+};
+
 export const FEEDBACK_TONES: Record<FeedbackStatus, BadgeTone> = {
   new: T.waiting,
   read: T.upcoming,
@@ -91,6 +102,10 @@ export function BookingStatusBadge({ status }: { status: BookingStatus }) {
 
 export function SubscriptionStatusBadge({ status }: { status: SubscriptionStatus }) {
   return <Badge tone={SUBSCRIPTION_TONES[status]}>{SUBSCRIPTION_STATUS_LABELS[status]}</Badge>;
+}
+
+export function PlanTierBadge({ tier }: { tier: PlanTier }) {
+  return <Badge tone={PLAN_TIER_TONES[tier]}>{PLAN_TIER_LABELS[tier]}</Badge>;
 }
 
 export function FeedbackStatusBadge({ status }: { status: FeedbackStatus }) {

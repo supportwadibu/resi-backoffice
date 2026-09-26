@@ -104,6 +104,18 @@ export default async function ReservationDetailPage({ params }: PageProps<"/rese
               ["Encaissé", booking.received_amount !== undefined ? formatPrice(booking.received_amount) : null],
               ["Caution", booking.deposit_amount ? formatPrice(booking.deposit_amount) : null],
               ["Remboursé", booking.refunded_amount > 0 ? formatPrice(booking.refunded_amount) : null],
+              [
+                "Apporteur",
+                booking.referrer
+                  ? [booking.referrer.name, booking.referrer.phone].filter(Boolean).join(" · ")
+                  : null,
+              ],
+              [
+                "Commission apporteur",
+                booking.referrer
+                  ? `${formatPrice(booking.referrer_commission_amount)} (${Math.round(booking.referrer_commission_rate * 100)} %)`
+                  : null,
+              ],
             ]}
           />
         </Section>

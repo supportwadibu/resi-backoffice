@@ -7,6 +7,7 @@ import type {
   Furnishing,
   IdDocumentType,
   OwnerStatus,
+  PlanTier,
   PromoCodeType,
   PropertyStatus,
   PropertyType,
@@ -87,6 +88,11 @@ export const SUBSCRIPTION_STATUS_LABELS: Record<SubscriptionStatus, string> = {
   active: "Actif",
   expired: "Expiré",
   cancelled: "Annulé",
+};
+
+export const PLAN_TIER_LABELS: Record<PlanTier, string> = {
+  basic: "3 000 F — enregistrement",
+  full: "5 000 F — complet",
 };
 
 export const PROMO_TYPE_LABELS: Record<PromoCodeType, string> = {

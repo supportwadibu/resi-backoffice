@@ -18,6 +18,13 @@ export interface Paginated<T> {
   meta: PaginationMeta;
 }
 
+/**
+ * Palier d'un plan : `basic` (3 000 F) couvre l'enregistrement, `full`
+ * (5 000 F) toute l'application propriétaire. L'API lit `full` un plan créé
+ * avant les paliers.
+ */
+export type PlanTier = "basic" | "full";
+
 export interface Plan {
   id: string;
   name: string;
@@ -26,6 +33,7 @@ export interface Plan {
   duration_days: number;
   max_residences: number;
   features: string[];
+  tier: PlanTier;
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -342,6 +350,12 @@ export interface PlatformBooking {
   expected_amount?: number;
   received_amount?: number;
   deposit_amount?: number;
+  /** Apporteur d'affaire, saisi librement à la création. */
+  referrer: { name: string; phone: string | null } | null;
+  /** Taux figé à la création, entre 0 et 1 ; 0 sans apporteur. */
+  referrer_commission_rate: number;
+  /** Commission due, recalculée par l'API quand le total du séjour change. */
+  referrer_commission_amount: number;
   property: PropertySummary | null;
   /** Résidence figée à la création de la réservation. */
   residence: ResidenceSummary | null;
@@ -366,6 +380,8 @@ export interface Subscription {
   is_trial: boolean;
   status: SubscriptionStatus;
   amount: number;
+  /** Palier figé à la souscription ; `full` pour un essai et l'historique. */
+  plan_tier: PlanTier;
   start_date: string;
   end_date: string;
   trial_ends_at: string | null;

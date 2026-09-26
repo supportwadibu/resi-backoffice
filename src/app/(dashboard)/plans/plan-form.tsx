@@ -10,10 +10,12 @@ import { ConfirmDialog } from "@/components/confirm-dialog";
 import { FormDialog } from "@/components/form-dialog";
 import { IconButton, RowActions } from "@/components/icon-button";
 import { Input } from "@/components/input";
+import { Select } from "@/components/select";
 import { notify } from "@/components/toast";
 import { number, text } from "@/lib/form-data";
 import { expectOk } from "@/lib/action-result";
-import type { Plan } from "@/lib/api/types";
+import type { Plan, PlanTier } from "@/lib/api/types";
+import { PLAN_TIER_LABELS, toOptions } from "@/lib/labels";
 
 function readForm(form: FormData): PlanInput | string {
   const price = number(form, "price");
@@ -26,6 +28,8 @@ function readForm(form: FormData): PlanInput | string {
   if (maxResidences === null || !Number.isInteger(maxResidences) || maxResidences <= 0) {
     return "Le nombre de résidences doit être un entier positif.";
   }
+  const tier = text(form, "tier");
+  if (tier !== "basic" && tier !== "full") return "Choisissez le palier du plan.";
 
   return {
     name: text(form, "name"),
@@ -38,6 +42,7 @@ function readForm(form: FormData): PlanInput | string {
       .split("\n")
       .map((line) => line.trim())
       .filter(Boolean),
+    tier: tier satisfies PlanTier,
     is_active: form.get("is_active") === "on",
   };
 }
@@ -52,6 +57,14 @@ function PlanFields({ plan }: { plan?: Plan }) {
         <Input label="Durée (jours)" type="number" name="duration_days" required min={1} step={1} defaultValue={plan?.duration_days} />
         <Input label="Résidences max." type="number" name="max_residences" required min={1} step={1} defaultValue={plan?.max_residences} />
       </div>
+      <Select
+        label="Palier"
+        name="tier"
+        required
+        options={toOptions(PLAN_TIER_LABELS)}
+        defaultValue={plan?.tier ?? "full"}
+        hint="Décide de ce que l'abonnement ouvre. Figé sur chaque abonnement souscrit : le changer n'affecte que les souscriptions suivantes."
+      />
       <Input
         label="Fonctionnalités"
         type="description"

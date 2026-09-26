@@ -2,7 +2,7 @@
 
 import { runAction } from "@/lib/api/action";
 import { apiFetch } from "@/lib/api/client";
-import type { Plan } from "@/lib/api/types";
+import type { Plan, PlanTier } from "@/lib/api/types";
 
 export interface PlanInput {
   name: string;
@@ -11,6 +11,7 @@ export interface PlanInput {
   duration_days: number;
   max_residences: number;
   features: string[];
+  tier: PlanTier;
   is_active: boolean;
 }
 

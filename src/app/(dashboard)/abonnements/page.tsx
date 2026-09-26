@@ -6,7 +6,7 @@ import { EmptyState, PageHeader } from "@/components/page-header";
 import { Pagination } from "@/components/pagination";
 import { ScopeHiddenInputs, ScopeNote } from "@/components/scope-note";
 import { Select } from "@/components/select";
-import { STATUS_TONES, SubscriptionStatusBadge } from "@/components/status-badges";
+import { PlanTierBadge, STATUS_TONES, SubscriptionStatusBadge } from "@/components/status-badges";
 import { Cell, Row, RowLink, Table } from "@/components/table";
 import { apiFetch } from "@/lib/api/client";
 import type { Paginated, Plan, Subscription, SubscriptionStatus } from "@/lib/api/types";
@@ -87,7 +87,15 @@ export default async function AbonnementsPage({ searchParams }: PageProps<"/abon
                 {subscription.is_trial ? (
                   <Badge tone={STATUS_TONES.ongoing}>Essai gratuit</Badge>
                 ) : subscription.plan_id ? (
-                  (planNames.get(subscription.plan_id) ?? <span className="text-muted">Plan supprimé</span>)
+                  <>
+                    <div>
+                      {planNames.get(subscription.plan_id) ?? <span className="text-muted">Plan supprimé</span>}
+                    </div>
+                    {/* Le palier figé à la souscription, et non celui du plan aujourd'hui. */}
+                    <div className="mt-1">
+                      <PlanTierBadge tier={subscription.plan_tier} />
+                    </div>
+                  </>
                 ) : (
                   "—"
                 )}

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import { Badge } from "@/components/badge";
 import { EmptyState, PageHeader } from "@/components/page-header";
-import { STATUS_TONES } from "@/components/status-badges";
+import { PlanTierBadge, STATUS_TONES } from "@/components/status-badges";
 import { Cell, Row, Table } from "@/components/table";
 import { apiFetch } from "@/lib/api/client";
 import type { Paginated, Plan } from "@/lib/api/types";
@@ -24,7 +24,7 @@ export default async function PlansPage() {
       {plans.length === 0 ? (
         <EmptyState>Aucun plan pour l&apos;instant.</EmptyState>
       ) : (
-        <Table head={["Nom", "Prix", "Durée", "Résidences max.", "Statut", ""]}>
+        <Table head={["Nom", "Palier", "Prix", "Durée", "Résidences max.", "Statut", ""]}>
           {plans.map((plan) => (
             <Row key={plan.id}>
               <Cell>
@@ -32,6 +32,9 @@ export default async function PlansPage() {
                 {plan.features.length > 0 && (
                   <div className="text-xs text-muted">{plan.features.join(" · ")}</div>
                 )}
+              </Cell>
+              <Cell>
+                <PlanTierBadge tier={plan.tier} />
               </Cell>
               <Cell className="whitespace-nowrap tabular-nums">{formatPrice(plan.price)}</Cell>
               <Cell className="whitespace-nowrap">{plan.duration_days} jours</Cell>
