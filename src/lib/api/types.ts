@@ -185,7 +185,6 @@ export type PropertyStatus =
   | "maintenance"
   | "inactive";
 export type PropertyType = "apartment" | "studio" | "villa" | "duplex";
-export type Furnishing = "unfurnished" | "semi_furnished" | "furnished";
 
 export interface PropertySummary {
   id: string;
@@ -231,7 +230,6 @@ export interface Property {
     floor_number?: number;
     total_floors?: number;
     year_built?: number;
-    furnishing?: Furnishing;
   };
   amenities: Record<string, boolean | undefined>;
   media: { images?: string[]; videos?: string[] };

@@ -5,13 +5,14 @@ import Link from "next/link";
 import { Badge } from "@/components/badge";
 import { ButtonLink } from "@/components/button";
 import { DetailList, EmptyState, PageHeader, Section } from "@/components/page-header";
+import { PhotoGallery } from "@/components/photo-gallery";
 import { SECTION_ICONS } from "@/components/shell/navigation";
 import { BookingStatusBadge, PropertyStatusBadge } from "@/components/status-badges";
 import { Cell, PersonCell, Row, RowLink, Table } from "@/components/table";
 import { apiFetchOrNotFound } from "@/lib/api/client";
 import type { PlatformProperty, PropertyClients } from "@/lib/api/types";
 import { formatDate, formatNumber, formatOptionalDate, formatPrice } from "@/lib/format";
-import { CLIENT_KIND_LABELS, FURNISHING_LABELS, PROPERTY_TYPE_LABELS } from "@/lib/labels";
+import { CLIENT_KIND_LABELS, PROPERTY_TYPE_LABELS } from "@/lib/labels";
 
 export const metadata: Metadata = { title: "Logement" };
 
@@ -48,14 +49,7 @@ export default async function LogementDetailPage({ params }: PageProps<"/logemen
         }
       />
 
-      {images.length > 0 && (
-        <div className="flex gap-2 overflow-x-auto">
-          {images.map((src, index) => (
-            // eslint-disable-next-line @next/next/no-img-element -- images hébergées hors du domaine, sans configuration d'optimiseur
-            <img key={src} src={src} alt={`Photo ${index + 1}`} className="h-40 w-auto shrink-0 border border-border object-cover" />
-          ))}
-        </div>
-      )}
+      {images.length > 0 && <PhotoGallery images={images} />}
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Section title="Rattachement" icon={Building2}>
@@ -119,7 +113,6 @@ export default async function LogementDetailPage({ params }: PageProps<"/logemen
               ["Salons", details.living_rooms],
               ["Cuisines", details.kitchens],
               ["Places de parking", details.parking_spaces],
-              ["Ameublement", details.furnishing ? FURNISHING_LABELS[details.furnishing] : null],
             ]}
           />
         </Section>

@@ -4,7 +4,6 @@ import type {
   ClientKind,
   FeedbackStatus,
   FeedbackType,
-  Furnishing,
   IdDocumentType,
   OwnerStatus,
   PlanTier,
@@ -51,12 +50,6 @@ export const PROPERTY_TYPE_LABELS: Record<PropertyType, string> = {
   studio: "Studio",
   villa: "Villa",
   duplex: "Duplex",
-};
-
-export const FURNISHING_LABELS: Record<Furnishing, string> = {
-  unfurnished: "Non meublé",
-  semi_furnished: "Semi-meublé",
-  furnished: "Meublé",
 };
 
 export const BOOKING_STATUS_LABELS: Record<BookingStatus, string> = {
