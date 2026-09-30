@@ -36,6 +36,39 @@ interface RequestOptions {
  * `/login` laisserait un jeton mort dans le navigateur.
  */
 export async function apiFetch<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  const response = await send(path, options);
+  if (response.status === 204) return undefined as T;
+
+  return (await response.json()) as T;
+}
+
+/** Fichier rendu par l'API, avec le nom qu'elle lui donne. */
+export interface ApiFile {
+  body: ArrayBuffer;
+  contentType: string;
+  /** Tiré de `Content-Disposition` ; `null` si l'API n'en donne pas. */
+  filename: string | null;
+}
+
+/**
+ * Appel à une route qui rend un fichier (un PDF) plutôt que du JSON.
+ *
+ * Mêmes garanties qu'`apiFetch` — jeton, 401, erreurs `{ code, message }` —,
+ * seul le décodage du corps diffère : un PDF lu en JSON lèverait.
+ */
+export async function apiFetchFile(path: string, options: RequestOptions = {}): Promise<ApiFile> {
+  const response = await send(path, { ...options, headers: { Accept: "application/pdf", ...options.headers } });
+  const disposition = response.headers.get("content-disposition");
+
+  return {
+    body: await response.arrayBuffer(),
+    contentType: response.headers.get("content-type") ?? "application/octet-stream",
+    filename: disposition?.match(/filename="?([^";]+)"?/)?.[1] ?? null,
+  };
+}
+
+/** Requête authentifiée ; lève `ApiError` sur toute réponse non 2xx. */
+async function send(path: string, options: RequestOptions): Promise<Response> {
   const { method = "GET", body, query, headers = {}, auth = true } = options;
 
   const url = new URL(apiUrl() + path);
@@ -76,9 +109,8 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
 
   if (auth && response.status === 401) redirect("/session-expiree");
   if (!response.ok) throw await toApiError(response);
-  if (response.status === 204) return undefined as T;
 
-  return (await response.json()) as T;
+  return response;
 }
 
 /**

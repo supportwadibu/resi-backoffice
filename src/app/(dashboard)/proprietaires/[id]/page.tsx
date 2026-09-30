@@ -13,6 +13,7 @@ import { formatDate, formatDateTime, formatNumber, formatOptionalDate } from "@/
 import { ID_DOCUMENT_LABELS } from "@/lib/labels";
 
 import { OwnerActions } from "./owner-actions";
+import { PoliceReportButton } from "./police-report-button";
 
 export const metadata: Metadata = { title: "Propriétaire" };
 
@@ -39,7 +40,15 @@ export default async function ProprietaireDetailPage({ params }: PageProps<"/pro
             {!owner.is_verified && <span>OTP non vérifié : validation impossible pour l&apos;instant.</span>}
           </span>
         }
-        actions={<OwnerActions owner={owner} />}
+        actions={
+          <>
+            <PoliceReportButton
+              ownerId={owner.id}
+              residences={portfolio.residences.map((residence) => ({ id: residence.id, name: residence.name }))}
+            />
+            <OwnerActions owner={owner} />
+          </>
+        }
       />
 
       <Section
@@ -58,6 +67,10 @@ export default async function ProprietaireDetailPage({ params }: PageProps<"/pro
             <ButtonLink variant="ghost" size="sm" href={`/reservations?owner_id=${owner.id}`}>
               <SECTION_ICONS.bookings aria-hidden className="size-4" />
               Réservations
+            </ButtonLink>
+            <ButtonLink variant="ghost" size="sm" href={`/notifications?destinataire=${owner.id}`}>
+              <SECTION_ICONS.notifications aria-hidden className="size-4" />
+              Notifier
             </ButtonLink>
           </div>
         }

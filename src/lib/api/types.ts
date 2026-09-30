@@ -495,3 +495,21 @@ export interface RevenueSeries {
   data: RevenuePoint[];
   total: number;
 }
+
+/** `all_owners` : envoi groupé ; `selected_owners` : envoi ciblé. */
+export type NotificationAudience = "all_owners" | "selected_owners";
+
+/** Notification push envoyée depuis le backoffice (`/admin/notifications`). */
+export interface NotificationCampaign {
+  id: string;
+  title: string;
+  body: string;
+  audience: NotificationAudience;
+  owner_ids: string[];
+  /** Comptes joints par au moins un appareil. */
+  recipients_count: number;
+  devices_sent: number;
+  devices_failed: number;
+  created_by: string;
+  created_at: string;
+}

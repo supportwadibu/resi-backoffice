@@ -4,6 +4,7 @@ import {
   CalendarCheck,
   CreditCard,
   Layers,
+  Bell,
   LayoutDashboard,
   type LucideIcon,
   MessageSquare,
@@ -35,6 +36,7 @@ export const SECTION_ICONS = {
   plans: Layers,
   promoCodes: TicketPercent,
   feedbacks: MessageSquare,
+  notifications: Bell,
 } satisfies Record<string, LucideIcon>;
 
 export interface NavItem {
@@ -68,6 +70,7 @@ export const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
     items: [
       { href: "/reservations", label: "Réservations", icon: SECTION_ICONS.bookings },
       { href: "/retours", label: "Retours", icon: SECTION_ICONS.feedbacks },
+      { href: "/notifications", label: "Notifications", icon: SECTION_ICONS.notifications },
     ],
   },
   {
