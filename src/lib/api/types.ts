@@ -347,6 +347,8 @@ export interface PlatformBooking {
   refunded_amount: number;
   expected_amount?: number;
   received_amount?: number;
+  /** Prix négocié par unité du type de séjour ; `null` au tarif ou sur l'historique. */
+  agreed_unit_price?: number | null;
   deposit_amount?: number;
   /** Apporteur d'affaire, saisi librement à la création. */
   referrer: { name: string; phone: string | null } | null;
