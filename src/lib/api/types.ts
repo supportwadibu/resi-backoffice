@@ -338,6 +338,8 @@ export interface PlatformBooking {
   stay_type?: StayType;
   check_in_at?: string;
   check_out_at?: string;
+  /** Arrivée réellement constatée au comptoir, distincte de la période facturée. */
+  actual_check_in_at?: string;
   /** Sortie réellement constatée, distincte de la période facturée. */
   actual_check_out_at?: string;
   /** Présents seulement après un départ anticipé. */
