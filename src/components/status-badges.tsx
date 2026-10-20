@@ -5,6 +5,7 @@ import type {
   PlanTier,
   PropertyStatus,
   SubscriptionStatus,
+  WithdrawalStatus,
 } from "@/lib/api/types";
 import {
   BOOKING_STATUS_LABELS,
@@ -13,6 +14,7 @@ import {
   PLAN_TIER_LABELS,
   PROPERTY_STATUS_LABELS,
   SUBSCRIPTION_STATUS_LABELS,
+  WITHDRAWAL_STATUS_LABELS,
 } from "@/lib/labels";
 
 import { Badge, type BadgeTone } from "./badge";
@@ -73,12 +75,12 @@ export const SUBSCRIPTION_TONES: Record<SubscriptionStatus, BadgeTone> = {
 };
 
 /**
- * Le forfait complet est « en règle » ; le forfait d'enregistrement n'est ni
- * arrêté ni hors circuit : il est actif, simplement réduit — bleu.
+ * RESI Pro+, complet, est « en règle » ; RESI Pro n'est ni arrêté ni hors
+ * circuit : il est actif, simplement réduit — bleu.
  */
 export const PLAN_TIER_TONES: Record<PlanTier, BadgeTone> = {
-  full: T.done,
-  basic: T.upcoming,
+  pro_plus: T.done,
+  pro: T.upcoming,
 };
 
 export const FEEDBACK_TONES: Record<FeedbackStatus, BadgeTone> = {
@@ -115,4 +117,15 @@ export function FeedbackStatusBadge({ status }: { status: FeedbackStatus }) {
 /** Désactiver un compte est une sanction : rouge, et non neutre comme un plan inactif. */
 export function ActiveBadge({ active }: { active: boolean }) {
   return active ? <Badge tone={T.done}>Actif</Badge> : <Badge tone={T.stopped}>Désactivé</Badge>;
+}
+
+/** À verser attend l'équipe (ambre), versé est abouti, refusé arrêté par une décision. */
+export const WITHDRAWAL_TONES: Record<WithdrawalStatus, BadgeTone> = {
+  pending: T.waiting,
+  paid: T.done,
+  rejected: T.stopped,
+};
+
+export function WithdrawalStatusBadge({ status }: { status: WithdrawalStatus }) {
+  return <Badge tone={WITHDRAWAL_TONES[status]}>{WITHDRAWAL_STATUS_LABELS[status]}</Badge>;
 }

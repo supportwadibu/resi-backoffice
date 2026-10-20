@@ -29,7 +29,7 @@ function readForm(form: FormData): PlanInput | string {
     return "Le nombre de résidences doit être un entier positif.";
   }
   const tier = text(form, "tier");
-  if (tier !== "basic" && tier !== "full") return "Choisissez le palier du plan.";
+  if (tier !== "pro" && tier !== "pro_plus") return "Choisissez le palier du plan.";
 
   return {
     name: text(form, "name"),
@@ -62,7 +62,7 @@ function PlanFields({ plan }: { plan?: Plan }) {
         name="tier"
         required
         options={toOptions(PLAN_TIER_LABELS)}
-        defaultValue={plan?.tier ?? "full"}
+        defaultValue={plan?.tier ?? "pro_plus"}
         hint="Décide de ce que l'abonnement ouvre. Figé sur chaque abonnement souscrit : le changer n'affecte que les souscriptions suivantes."
       />
       <Input

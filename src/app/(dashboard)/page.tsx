@@ -129,8 +129,8 @@ export default async function DashboardPage() {
             icon={SECTION_ICONS.subscriptions}
             rows={breakdownRows(
               {
-                basic: resi.recurring.by_tier.basic.subscribers,
-                full: resi.recurring.by_tier.full.subscribers,
+                pro: resi.recurring.by_tier.pro.subscribers,
+                pro_plus: resi.recurring.by_tier.pro_plus.subscribers,
               },
               PLAN_TIER_LABELS,
             )}

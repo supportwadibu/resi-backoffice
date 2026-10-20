@@ -19,11 +19,15 @@ export interface Paginated<T> {
 }
 
 /**
- * Palier d'un plan : `basic` (3 000 F) couvre l'enregistrement, `full`
- * (5 000 F) toute l'application propriétaire. L'API lit `full` un plan créé
- * avant les paliers.
+ * Palier vendu d'un plan : `pro` (RESI Pro, 3 000 F / mois) — réservations,
+ * dépenses, finances, carnet clients — et `pro_plus` (RESI Pro+, 5 000 F /
+ * mois) — en plus gérants, factures, rapports PDF. RESI Basic, gratuit, n'a
+ * pas de plan : c'est l'accès d'un propriétaire sans abonnement en cours.
+ *
+ * L'API relit `basic` en `pro` et `full` — ou l'absence de palier — en
+ * `pro_plus`.
  */
-export type PlanTier = "basic" | "full";
+export type PlanTier = "pro" | "pro_plus";
 
 export interface Plan {
   id: string;
@@ -331,6 +335,14 @@ export interface PlatformBooking {
   cancelled_at: string | null;
   completed_at: string | null;
   cancellation_reason: string | null;
+  /** Sort de l'acompte à l'annulation ; `null` hors annulation ou sans acompte. */
+  cancellation_deposit_action: "keep" | "refund" | null;
+  /** Acompte gardé à l'annulation, compté en revenu du propriétaire. */
+  retained_amount: number;
+  /** Acompte rendu au client à l'annulation. */
+  cancellation_refunded_amount: number;
+  /** Supplément de départ tardif, déjà compris dans les montants. */
+  late_checkout_fee: number;
   created_at: string;
   updated_at: string;
   /** Absent sur l'historique antérieur au comptoir, tout en ligne. */
@@ -382,7 +394,7 @@ export interface Subscription {
   is_trial: boolean;
   status: SubscriptionStatus;
   amount: number;
-  /** Palier figé à la souscription ; `full` pour un essai et l'historique. */
+  /** Palier figé à la souscription ; `pro_plus` pour un essai et l'historique. */
   plan_tier: PlanTier;
   start_date: string;
   end_date: string;
@@ -516,4 +528,37 @@ export interface NotificationCampaign {
   devices_failed: number;
   created_by: string;
   created_at: string;
+}
+
+// ── Portefeuilles et retraits ──────────────────────────────────────────────
+
+export type WithdrawalStatus = "pending" | "paid" | "rejected";
+
+/**
+ * Demande de retrait d'un portefeuille de résidence : l'argent payé par Wave
+ * par les clients, que RESI doit au propriétaire. L'équipe verse `net_amount`
+ * par Wave au `payout_phone`, puis marque la demande versée — ou la refuse,
+ * et le montant revient au portefeuille.
+ */
+export interface Withdrawal {
+  id: string;
+  wallet_id: string;
+  owner_id: string;
+  residence_id: string | null;
+  residence_name: string | null;
+  /** Débité du portefeuille. */
+  amount: number;
+  /** 1 %, au franc supérieur. */
+  fee: number;
+  /** À verser au propriétaire. */
+  net_amount: number;
+  payout_phone: string;
+  payout_name: string | null;
+  status: WithdrawalStatus;
+  payout_reference: string | null;
+  rejection_reason: string | null;
+  processed_at: string | null;
+  created_at: string;
+  owner: { id: string; full_name: string; phone: string | null } | null;
+  processed_by: string | null;
 }

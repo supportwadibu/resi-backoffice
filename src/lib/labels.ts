@@ -13,6 +13,7 @@ import type {
   RoleName,
   StayType,
   SubscriptionStatus,
+  WithdrawalStatus,
 } from "@/lib/api/types";
 
 /**
@@ -83,9 +84,15 @@ export const SUBSCRIPTION_STATUS_LABELS: Record<SubscriptionStatus, string> = {
   cancelled: "Annulé",
 };
 
+export const WITHDRAWAL_STATUS_LABELS: Record<WithdrawalStatus, string> = {
+  pending: "À verser",
+  paid: "Versé",
+  rejected: "Refusé",
+};
+
 export const PLAN_TIER_LABELS: Record<PlanTier, string> = {
-  basic: "3 000 F — enregistrement",
-  full: "5 000 F — complet",
+  pro: "RESI Pro — 3 000 F",
+  pro_plus: "RESI Pro+ — 5 000 F",
 };
 
 export const PROMO_TYPE_LABELS: Record<PromoCodeType, string> = {
