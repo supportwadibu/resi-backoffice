@@ -11,6 +11,7 @@ import {
   TicketPercent,
   UserCheck,
   Users,
+  Wallet,
 } from "lucide-react";
 
 /**
@@ -37,6 +38,7 @@ export const SECTION_ICONS = {
   promoCodes: TicketPercent,
   feedbacks: MessageSquare,
   notifications: Bell,
+  withdrawals: Wallet,
 } satisfies Record<string, LucideIcon>;
 
 export interface NavItem {
@@ -79,6 +81,7 @@ export const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
       { href: "/abonnements", label: "Abonnements", icon: SECTION_ICONS.subscriptions },
       { href: "/plans", label: "Plans", icon: SECTION_ICONS.plans },
       { href: "/codes-promo", label: "Codes promo", icon: SECTION_ICONS.promoCodes },
+      { href: "/retraits", label: "Retraits", icon: SECTION_ICONS.withdrawals },
     ],
   },
 ];
