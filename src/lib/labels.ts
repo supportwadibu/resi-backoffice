@@ -2,6 +2,7 @@ import type {
   BookingSource,
   BookingStatus,
   ClientKind,
+  DepositAction,
   FeedbackStatus,
   FeedbackType,
   IdDocumentType,
@@ -63,6 +64,12 @@ export const BOOKING_STATUS_LABELS: Record<BookingStatus, string> = {
 export const BOOKING_SOURCE_LABELS: Record<BookingSource, string> = {
   online: "En ligne",
   offline: "Comptoir",
+};
+
+/** Sort, à l'annulation, de ce que le client avait versé. */
+export const DEPOSIT_ACTION_LABELS: Record<DepositAction, string> = {
+  keep: "Gardé par le propriétaire",
+  refund: "Rendu au client",
 };
 
 export const STAY_TYPE_LABELS: Record<StayType, string> = {

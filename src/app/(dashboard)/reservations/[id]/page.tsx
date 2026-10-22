@@ -8,7 +8,7 @@ import { BookingStatusBadge } from "@/components/status-badges";
 import { apiFetchOrNotFound } from "@/lib/api/client";
 import type { PlatformBooking } from "@/lib/api/types";
 import { formatDate, formatDateTime, formatPrice } from "@/lib/format";
-import { BOOKING_SOURCE_LABELS, CLIENT_KIND_LABELS, STAY_TYPE_LABELS } from "@/lib/labels";
+import { BOOKING_SOURCE_LABELS, CLIENT_KIND_LABELS, DEPOSIT_ACTION_LABELS, STAY_TYPE_LABELS } from "@/lib/labels";
 
 export const metadata: Metadata = { title: "Réservation" };
 
@@ -20,6 +20,24 @@ export default async function ReservationDetailPage({ params }: PageProps<"/rese
 
   // Le départ anticipé fige ce qui avait été vendu avant de réduire le séjour.
   const shortened = booking.planned_check_out_at !== undefined;
+
+  // Issue de l'annulation, lue sur la réservation : c'est ici qu'on vérifie
+  // qu'un client annulé a été remboursé — par Wave pour un paiement en ligne.
+  // Absente hors annulation, où ses lignes ne porteraient que des tirets.
+  const cancellationRows: [string, ReactNode][] =
+    booking.status === "cancelled"
+      ? [
+          [
+            "Somme versée",
+            booking.cancellation_deposit_action ? DEPOSIT_ACTION_LABELS[booking.cancellation_deposit_action] : null,
+          ],
+          ["Gardé", booking.retained_amount > 0 ? formatPrice(booking.retained_amount) : null],
+          [
+            "Rendu au client",
+            booking.cancellation_refunded_amount > 0 ? formatPrice(booking.cancellation_refunded_amount) : null,
+          ],
+        ]
+      : [];
 
   return (
     <div className="flex flex-col gap-6">
@@ -129,6 +147,7 @@ export default async function ReservationDetailPage({ params }: PageProps<"/rese
               ["Terminée le", booking.completed_at ? formatDateTime(booking.completed_at) : null],
               ["Annulée le", booking.cancelled_at ? formatDateTime(booking.cancelled_at) : null],
               ["Motif d'annulation", booking.cancellation_reason],
+              ...cancellationRows,
               ["Créée le", formatDateTime(booking.created_at)],
             ]}
           />
