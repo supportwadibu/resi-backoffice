@@ -314,6 +314,7 @@ export interface PropertyClients {
 export type BookingStatus = "confirmed" | "in_progress" | "cancelled" | "completed";
 export type BookingSource = "online" | "offline";
 export type StayType = "full_day" | "half_day" | "passage";
+export type DepositAction = "keep" | "refund";
 
 export interface PlatformBooking {
   id: string;
@@ -335,11 +336,17 @@ export interface PlatformBooking {
   cancelled_at: string | null;
   completed_at: string | null;
   cancellation_reason: string | null;
-  /** Sort de l'acompte à l'annulation ; `null` hors annulation ou sans acompte. */
-  cancellation_deposit_action: "keep" | "refund" | null;
-  /** Acompte gardé à l'annulation, compté en revenu du propriétaire. */
+  /**
+   * Sort, à l'annulation, de ce que le client avait versé — acompte au
+   * comptoir et paiement en ligne ; `null` hors annulation ou sans versement.
+   */
+  cancellation_deposit_action: DepositAction | null;
+  /** Somme gardée à l'annulation, comptée en revenu du propriétaire. */
   retained_amount: number;
-  /** Acompte rendu au client à l'annulation. */
+  /**
+   * Somme rendue au client à l'annulation : l'acompte de la main à la main,
+   * le paiement en ligne par Wave.
+   */
   cancellation_refunded_amount: number;
   /** Supplément de départ tardif, déjà compris dans les montants. */
   late_checkout_fee: number;
@@ -368,7 +375,11 @@ export interface PlatformBooking {
   referrer: { name: string; phone: string | null } | null;
   /** Taux figé à la création, entre 0 et 1 ; 0 sans apporteur. */
   referrer_commission_rate: number;
-  /** Commission due, recalculée par l'API quand le total du séjour change. */
+  /**
+   * Commission due, figée à l'enregistrement : départ anticipé, prolongation
+   * et modification ne la changent pas. Comptée dans les dépenses du
+   * propriétaire ; retirée à l'annulation.
+   */
   referrer_commission_amount: number;
   property: PropertySummary | null;
   /** Résidence figée à la création de la réservation. */
