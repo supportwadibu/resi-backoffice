@@ -414,6 +414,10 @@ export interface Subscription {
   auto_renew: boolean;
   cancelled_at: string | null;
   cancel_reason: string | null;
+  /** Valeur d'un jour de la période ; `null` sur l'historique. */
+  daily_value: number | null;
+  /** Rendu au portefeuille du propriétaire à sa résiliation ; `null` sinon. */
+  refunded_amount: number | null;
   created_at: string;
   updated_at: string;
 }
