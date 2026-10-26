@@ -12,7 +12,11 @@ import { Cell, Row, RowLink, Table } from "@/components/table";
 import { apiFetch } from "@/lib/api/client";
 import type { Paginated, Plan, Subscription, SubscriptionStatus } from "@/lib/api/types";
 import { formatDate, formatPrice } from "@/lib/format";
-import { SUBSCRIPTION_STATUS_LABELS, toOptions } from "@/lib/labels";
+import {
+  SUBSCRIPTION_CANCEL_REASON_LABELS,
+  SUBSCRIPTION_STATUS_LABELS,
+  toOptions,
+} from "@/lib/labels";
 import { boolParam, enumParam, pageParam, param } from "@/lib/search-params";
 
 import { CancelSubscription } from "./cancel-subscription";
@@ -107,7 +111,24 @@ export default async function AbonnementsPage({ searchParams }: PageProps<"/abon
               <Cell>
                 <SubscriptionStatusBadge status={subscription.status} />
                 {subscription.cancel_reason && (
-                  <div className="mt-1 max-w-56 text-xs text-muted">{subscription.cancel_reason}</div>
+                  <div className="mt-1 max-w-56 text-xs text-muted">
+                    {SUBSCRIPTION_CANCEL_REASON_LABELS[subscription.cancel_reason] ??
+                      subscription.cancel_reason}
+                  </div>
+                )}
+                {subscription.refunded_amount != null && subscription.refunded_amount > 0 && (
+                  <div className="mt-1 text-xs text-muted tabular-nums">
+                    {formatPrice(subscription.refunded_amount)} remboursés au portefeuille
+                  </div>
+                )}
+                {/* Champs absents d'une API antérieure à la règle de résiliation. */}
+                {(subscription.retained_credit ?? 0) > 0 && (
+                  <div className="mt-1 text-xs text-muted tabular-nums">
+                    {formatPrice(subscription.retained_credit ?? 0)} gardés en crédit
+                  </div>
+                )}
+                {subscription.cancel_at_period_end && (
+                  <div className="mt-1 text-xs text-muted">Résilié, fin à l’échéance</div>
                 )}
               </Cell>
               <Cell className="whitespace-nowrap">

@@ -414,6 +414,16 @@ export interface Subscription {
   auto_renew: boolean;
   cancelled_at: string | null;
   cancel_reason: string | null;
+  /** Valeur d'un jour de la période ; `null` sur l'historique. */
+  daily_value: number | null;
+  /** Rendu au portefeuille du propriétaire à sa résiliation ; `null` sinon. */
+  refunded_amount: number | null;
+  /** Crédit d'abonnement déduit du paiement ; `null` sans crédit. */
+  credit_applied: number | null;
+  /** Gardé en crédit bloqué à la résiliation ; `null` sinon. */
+  retained_credit: number | null;
+  /** Résilié sans remboursement : actif jusqu'à `end_date`, puis expiré. */
+  cancel_at_period_end: boolean;
   created_at: string;
   updated_at: string;
 }

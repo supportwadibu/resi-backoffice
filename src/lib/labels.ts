@@ -91,6 +91,19 @@ export const SUBSCRIPTION_STATUS_LABELS: Record<SubscriptionStatus, string> = {
   cancelled: "Annulé",
 };
 
+/**
+ * Motifs de clôture posés par l'API. Un motif saisi par l'équipe à
+ * l'annulation, absent d'ici, s'affiche tel quel.
+ */
+export const SUBSCRIPTION_CANCEL_REASON_LABELS: Record<string, string> = {
+  owner_cancelled: "Résilié par le propriétaire",
+  upgraded: "Remplacé par un forfait supérieur",
+  renewed: "Renouvelé",
+  upgraded_to_plan: "Essai remplacé par un forfait",
+  superseded: "Remplacé",
+  admin_cancel: "Annulé par l'équipe",
+};
+
 export const WITHDRAWAL_STATUS_LABELS: Record<WithdrawalStatus, string> = {
   pending: "À verser",
   paid: "Versé",
