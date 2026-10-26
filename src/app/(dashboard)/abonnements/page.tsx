@@ -121,6 +121,15 @@ export default async function AbonnementsPage({ searchParams }: PageProps<"/abon
                     {formatPrice(subscription.refunded_amount)} remboursés au portefeuille
                   </div>
                 )}
+                {/* Champs absents d'une API antérieure à la règle de résiliation. */}
+                {(subscription.retained_credit ?? 0) > 0 && (
+                  <div className="mt-1 text-xs text-muted tabular-nums">
+                    {formatPrice(subscription.retained_credit ?? 0)} gardés en crédit
+                  </div>
+                )}
+                {subscription.cancel_at_period_end && (
+                  <div className="mt-1 text-xs text-muted">Résilié, fin à l’échéance</div>
+                )}
               </Cell>
               <Cell className="whitespace-nowrap">
                 {formatDate(subscription.start_date)} → {formatDate(subscription.end_date)}
