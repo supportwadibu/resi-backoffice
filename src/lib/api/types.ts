@@ -555,6 +555,14 @@ export interface NotificationCampaign {
 
 export type WithdrawalStatus = "pending" | "paid" | "rejected";
 
+/** Réglages des retraits (`GET /admin/settings/withdrawals`). */
+export interface WithdrawalSettings {
+  /** Retrait minimal, en francs. */
+  minimum_amount: number;
+  /** `null` tant que le minimum n'a jamais été réglé : la valeur par défaut. */
+  updated_at: string | null;
+}
+
 /**
  * Demande de retrait d'un portefeuille de résidence : l'argent payé par Wave
  * par les clients, que RESI doit au propriétaire. L'équipe verse `net_amount`
@@ -575,6 +583,12 @@ export interface Withdrawal {
   net_amount: number;
   payout_phone: string;
   payout_name: string | null;
+  /**
+   * Numéro Wave enregistré choisi (1 ou 2) ; `null` pour un numéro saisi à la
+   * main par une version antérieure de l'application. Absent d'une API
+   * antérieure.
+   */
+  payout_slot?: number | null;
   status: WithdrawalStatus;
   payout_reference: string | null;
   rejection_reason: string | null;

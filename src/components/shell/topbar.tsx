@@ -5,6 +5,7 @@ import type { ThemePreference } from "@/lib/theme";
 import { Breadcrumb } from "./breadcrumb";
 import { MobileNav } from "./mobile-nav";
 import { UserMenu } from "./user-menu";
+import { WithdrawalAlerts } from "./withdrawal-alerts";
 
 /** En-tête du tableau de bord, fixe au-dessus du contenu qui défile. */
 export function Topbar({ user, theme }: { user: SessionUser; theme: ThemePreference }) {
@@ -13,6 +14,7 @@ export function Topbar({ user, theme }: { user: SessionUser; theme: ThemePrefere
       <MobileNav />
       <Breadcrumb />
       <div className="ml-auto flex items-center gap-3 sm:gap-4">
+        <WithdrawalAlerts />
         <ThemeSwitcher initial={theme} />
         <UserMenu user={user} />
       </div>
