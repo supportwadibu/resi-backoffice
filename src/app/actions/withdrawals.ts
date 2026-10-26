@@ -2,7 +2,7 @@
 
 import { runAction } from "@/lib/api/action";
 import { apiFetch } from "@/lib/api/client";
-import type { Withdrawal } from "@/lib/api/types";
+import type { Withdrawal, WithdrawalSettings } from "@/lib/api/types";
 
 /** Le transfert Wave est fait : la demande est close, le portefeuille reste débité. */
 export async function markWithdrawalPaid(id: string, payoutReference?: string) {
@@ -20,6 +20,16 @@ export async function rejectWithdrawal(id: string, rejectionReason: string) {
     apiFetch<{ data: Withdrawal }>(`/admin/withdrawals/${encodeURIComponent(id)}/reject`, {
       method: "PATCH",
       body: { rejection_reason: rejectionReason },
+    }),
+  );
+}
+
+/** Retrait minimal : vaut pour les demandes suivantes, pas pour celles en attente. */
+export async function updateWithdrawalSettings(minimumAmount: number) {
+  return runAction(() =>
+    apiFetch<{ data: WithdrawalSettings }>("/admin/settings/withdrawals", {
+      method: "PUT",
+      body: { minimum_amount: minimumAmount },
     }),
   );
 }

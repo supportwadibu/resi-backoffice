@@ -8,12 +8,13 @@ import { Select } from "@/components/select";
 import { WithdrawalStatusBadge } from "@/components/status-badges";
 import { Cell, Row, RowLink, Table } from "@/components/table";
 import { apiFetch } from "@/lib/api/client";
-import type { Paginated, Withdrawal, WithdrawalStatus } from "@/lib/api/types";
+import type { Paginated, Withdrawal, WithdrawalSettings, WithdrawalStatus } from "@/lib/api/types";
 import { formatDate, formatPrice } from "@/lib/format";
 import { WITHDRAWAL_STATUS_LABELS, toOptions } from "@/lib/labels";
 import { enumParam, pageParam } from "@/lib/search-params";
 
 import { MarkWithdrawalPaid, RejectWithdrawal } from "./withdrawal-actions";
+import { WithdrawalSettingsButton } from "./withdrawal-settings";
 
 export const metadata: Metadata = { title: "Retraits" };
 
@@ -23,15 +24,19 @@ export default async function RetraitsPage({ searchParams }: PageProps<"/retrait
   const params = await searchParams;
   const filters = { status: enumParam(params, "status", STATUSES) };
 
-  const { data: withdrawals, meta } = await apiFetch<Paginated<Withdrawal>>("/admin/withdrawals", {
-    query: { ...filters, page: pageParam(params), per_page: 25 },
-  });
+  const [{ data: withdrawals, meta }, { data: settings }] = await Promise.all([
+    apiFetch<Paginated<Withdrawal>>("/admin/withdrawals", {
+      query: { ...filters, page: pageParam(params), per_page: 25 },
+    }),
+    apiFetch<{ data: WithdrawalSettings }>("/admin/settings/withdrawals"),
+  ]);
 
   return (
     <div>
       <PageHeader
         title="Retraits"
         description="Demandes de retrait des portefeuilles : à verser par Wave, net des frais de 1 %."
+        actions={<WithdrawalSettingsButton minimumAmount={settings.minimum_amount} />}
       />
 
       <FilterBar key={JSON.stringify(filters)} path="/retraits" active={filters.status !== undefined}>
@@ -67,6 +72,9 @@ export default async function RetraitsPage({ searchParams }: PageProps<"/retrait
               <Cell className="whitespace-nowrap">
                 <div className="tabular-nums">{withdrawal.payout_phone}</div>
                 {withdrawal.payout_name && <div className="text-xs text-muted">{withdrawal.payout_name}</div>}
+                {withdrawal.payout_slot != null && (
+                  <div className="text-xs text-muted">Numéro {withdrawal.payout_slot} du propriétaire</div>
+                )}
               </Cell>
               <Cell>
                 <WithdrawalStatusBadge status={withdrawal.status} />
