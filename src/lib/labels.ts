@@ -11,7 +11,13 @@ import type {
   PromoCodeType,
   PropertyStatus,
   PropertyType,
+  RedemptionStatus,
+  RedemptionType,
+  RewardMode,
   RoleName,
+  SponsorshipRole,
+  SponsorshipStatus,
+  SponsorshipTrigger,
   StayType,
   SubscriptionStatus,
   WithdrawalStatus,
@@ -138,6 +144,41 @@ export const ID_DOCUMENT_LABELS: Record<IdDocumentType, string> = {
   cni: "Carte nationale d'identité",
   passport: "Passeport",
   driving_licence: "Permis de conduire",
+};
+
+export const SPONSORSHIP_ROLE_LABELS: Record<SponsorshipRole, string> = {
+  client: "Client",
+  proprio: "Propriétaire",
+};
+
+export const SPONSORSHIP_STATUS_LABELS: Record<SponsorshipStatus, string> = {
+  registered: "Inscrit",
+  pending: "Gain en attente",
+  earned: "Gain acquis",
+  cancelled: "Annulé",
+};
+
+export const SPONSORSHIP_TRIGGER_LABELS: Record<SponsorshipTrigger, string> = {
+  booking_completed: "Séjour terminé",
+  subscription_paid: "Abonnement payé",
+};
+
+export const REWARD_MODE_LABELS: Record<RewardMode, string> = {
+  fixed: "Montant fixe",
+  percent: "Pourcentage",
+};
+
+export const REDEMPTION_TYPE_LABELS: Record<RedemptionType, string> = {
+  withdrawal: "Retrait Wave",
+  stay_credit: "Crédit séjour",
+  subscription_credit: "Crédit d'abonnement",
+};
+
+export const REDEMPTION_STATUS_LABELS: Record<RedemptionStatus, string> = {
+  pending: "À verser",
+  paid: "Versé",
+  rejected: "Refusé",
+  completed: "Converti",
 };
 
 /** Transforme un dictionnaire de libellés en options de liste déroulante. */

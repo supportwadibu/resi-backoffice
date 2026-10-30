@@ -3,6 +3,7 @@ import {
   Building2,
   CalendarCheck,
   CreditCard,
+  Gift,
   Layers,
   Bell,
   LayoutDashboard,
@@ -39,6 +40,7 @@ export const SECTION_ICONS = {
   feedbacks: MessageSquare,
   notifications: Bell,
   withdrawals: Wallet,
+  sponsorships: Gift,
 } satisfies Record<string, LucideIcon>;
 
 export interface NavItem {
@@ -82,6 +84,7 @@ export const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
       { href: "/plans", label: "Plans", icon: SECTION_ICONS.plans },
       { href: "/codes-promo", label: "Codes promo", icon: SECTION_ICONS.promoCodes },
       { href: "/retraits", label: "Retraits", icon: SECTION_ICONS.withdrawals },
+      { href: "/parrainages", label: "Parrainages", icon: SECTION_ICONS.sponsorships },
     ],
   },
 ];

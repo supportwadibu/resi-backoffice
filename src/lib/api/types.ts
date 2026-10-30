@@ -332,6 +332,13 @@ export interface PlatformBooking {
   discount_amount: number;
   total_amount: number;
   promo_code: string | null;
+  /**
+   * Part réglée avec le crédit parrainage du client, comprise dans
+   * `total_amount` — RESI la finance. Absente d'une API antérieure.
+   */
+  sponsorship_credit_amount?: number;
+  /** Reste à payer en ligne. Absent d'une API antérieure. */
+  amount_due?: number;
   message: string | null;
   cancelled_at: string | null;
   completed_at: string | null;
@@ -595,5 +602,103 @@ export interface Withdrawal {
   processed_at: string | null;
   created_at: string;
   owner: { id: string; full_name: string; phone: string | null } | null;
+  processed_by: string | null;
+}
+
+/* ------------------------------------------------------------- parrainage */
+
+/** Rôles qui parrainent et qu'on parraine. */
+export type SponsorshipRole = "client" | "proprio";
+
+/**
+ * - `registered` : inscrit, pas encore d'action qui rapporte ;
+ * - `pending` : gain acquis, dans son délai d'attente ;
+ * - `earned` : gain disponible au parrain ;
+ * - `cancelled` : gain annulé.
+ */
+export type SponsorshipStatus = "registered" | "pending" | "earned" | "cancelled";
+
+export type SponsorshipTrigger = "booking_completed" | "subscription_paid";
+
+export type RewardMode = "fixed" | "percent";
+
+export type RedemptionType = "withdrawal" | "stay_credit" | "subscription_credit";
+
+/** `completed` : conversion appliquée sur-le-champ. Les trois autres : retrait. */
+export type RedemptionStatus = "pending" | "paid" | "rejected" | "completed";
+
+/** Gain dû pour un filleul d'un rôle donné. */
+export interface RewardRule {
+  /** `fixed` : `value` francs. `percent` : `value` % du montant payé. */
+  mode: RewardMode;
+  value: number;
+  /** Plafond d'un gain en pourcentage ; `null` : sans plafond. */
+  max_amount: number | null;
+  /** Jours d'attente avant que le gain soit disponible. */
+  hold_days: number;
+}
+
+export interface RedemptionRule {
+  minimum_amount: number;
+  options: RedemptionType[];
+}
+
+/** Réglages du parrainage (`GET /admin/settings/sponsorships`). */
+export interface SponsorshipSettings {
+  /** Coupe les gains, pas les parrainages. */
+  enabled: boolean;
+  /** Par rôle du filleul. */
+  rewards: Record<SponsorshipRole, RewardRule>;
+  /** Par rôle du parrain. */
+  redemption: Record<SponsorshipRole, RedemptionRule>;
+  attach_window_days: number;
+  /** `null` tant que rien n'a été réglé : les valeurs par défaut, gains coupés. */
+  updated_at: string | null;
+}
+
+export interface SponsorshipUser {
+  id: string;
+  full_name: string;
+  phone: string | null;
+}
+
+/** Un filleul et le gain qu'il a rapporté à son parrain. `id` : celui du filleul. */
+export interface Sponsorship {
+  id: string;
+  code: string;
+  status: SponsorshipStatus;
+  sponsor_role: SponsorshipRole;
+  sponsored_role: SponsorshipRole;
+  sponsor: SponsorshipUser | null;
+  sponsored: SponsorshipUser & { name_at_signup: string };
+  reward_amount: number;
+  /** Règle figée au gain. */
+  reward_rule: RewardRule | null;
+  trigger: SponsorshipTrigger | null;
+  /** Réservation ou référence du paiement d'abonnement. */
+  trigger_ref_id: string | null;
+  trigger_amount: number | null;
+  available_at: string | null;
+  qualified_at: string | null;
+  earned_at: string | null;
+  cancelled_at: string | null;
+  cancellation_reason: string | null;
+  created_at: string;
+}
+
+/** Retrait ou conversion des gains d'un parrain. */
+export interface SponsorshipRedemption {
+  id: string;
+  type: RedemptionType;
+  amount: number;
+  status: RedemptionStatus;
+  payout_phone: string | null;
+  payout_name: string | null;
+  payout_reference: string | null;
+  rejection_reason: string | null;
+  processed_at: string | null;
+  created_at: string;
+  user_role: SponsorshipRole;
+  user: SponsorshipUser | null;
   processed_by: string | null;
 }

@@ -118,6 +118,13 @@ export default async function ReservationDetailPage({ params }: PageProps<"/rese
                   : "Aucune",
               ],
               ["Total", <strong key="total">{formatPrice(booking.total_amount)}</strong>],
+              // Financé par RESI : le propriétaire est crédité du total.
+              [
+                "Crédit parrainage",
+                booking.sponsorship_credit_amount
+                  ? `${formatPrice(booking.sponsorship_credit_amount)} financés par RESI`
+                  : null,
+              ],
               ["Attendu", booking.expected_amount !== undefined ? formatPrice(booking.expected_amount) : null],
               ["Encaissé", booking.received_amount !== undefined ? formatPrice(booking.received_amount) : null],
               ["Caution", booking.deposit_amount ? formatPrice(booking.deposit_amount) : null],
