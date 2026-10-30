@@ -4,6 +4,8 @@ import type {
   OwnerStatus,
   PlanTier,
   PropertyStatus,
+  RedemptionStatus,
+  SponsorshipStatus,
   SubscriptionStatus,
   WithdrawalStatus,
 } from "@/lib/api/types";
@@ -13,6 +15,8 @@ import {
   OWNER_STATUS_LABELS,
   PLAN_TIER_LABELS,
   PROPERTY_STATUS_LABELS,
+  REDEMPTION_STATUS_LABELS,
+  SPONSORSHIP_STATUS_LABELS,
   SUBSCRIPTION_STATUS_LABELS,
   WITHDRAWAL_STATUS_LABELS,
 } from "@/lib/labels";
@@ -128,4 +132,31 @@ export const WITHDRAWAL_TONES: Record<WithdrawalStatus, BadgeTone> = {
 
 export function WithdrawalStatusBadge({ status }: { status: WithdrawalStatus }) {
   return <Badge tone={WITHDRAWAL_TONES[status]}>{WITHDRAWAL_STATUS_LABELS[status]}</Badge>;
+}
+
+/**
+ * Inscrit attend une action du filleul (ambre), le gain en attente court son
+ * délai (violet), acquis est abouti, annulé arrêté par une décision.
+ */
+export const SPONSORSHIP_TONES: Record<SponsorshipStatus, BadgeTone> = {
+  registered: T.waiting,
+  pending: T.ongoing,
+  earned: T.done,
+  cancelled: T.stopped,
+};
+
+export function SponsorshipStatusBadge({ status }: { status: SponsorshipStatus }) {
+  return <Badge tone={SPONSORSHIP_TONES[status]}>{SPONSORSHIP_STATUS_LABELS[status]}</Badge>;
+}
+
+/** Comme un retrait de portefeuille ; une conversion, appliquée d'emblée, est aboutie. */
+export const REDEMPTION_TONES: Record<RedemptionStatus, BadgeTone> = {
+  pending: T.waiting,
+  paid: T.done,
+  rejected: T.stopped,
+  completed: T.done,
+};
+
+export function RedemptionStatusBadge({ status }: { status: RedemptionStatus }) {
+  return <Badge tone={REDEMPTION_TONES[status]}>{REDEMPTION_STATUS_LABELS[status]}</Badge>;
 }
