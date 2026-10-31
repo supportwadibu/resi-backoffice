@@ -88,17 +88,20 @@ export default async function LogementDetailPage({ params }: PageProps<"/logemen
         <Section title="Tarification" icon={Banknote}>
           <DetailList
             items={[
-              ["Prix par jour", formatPrice(pricing.daily_price)],
+              ["Prix par nuit", formatPrice(pricing.daily_price)],
+              // L'API comble l'heure des biens antérieurs ; le repli couvre
+              // une API qui ne l'expose pas encore.
+              ["Heure de départ", (pricing.checkout_time ?? "12:30").replace(":", " h ")],
               [
                 "Remises de durée",
                 tiers.length > 0
                   ? tiers
-                      .map((tier) => `−${tier.discount_percent} % dès ${tier.min_days} jours`)
+                      .map((tier) => `−${tier.discount_percent} % dès ${tier.min_days} nuits`)
                       .join(" · ")
                   : "Aucune",
               ],
-              ["Séjour minimum", pricing.minimum_stay_days ? `${pricing.minimum_stay_days} jours` : null],
-              ["Séjour maximum", pricing.maximum_stay_days ? `${pricing.maximum_stay_days} jours` : null],
+              ["Séjour minimum", pricing.minimum_stay_days ? `${pricing.minimum_stay_days} nuits` : null],
+              ["Séjour maximum", pricing.maximum_stay_days ? `${pricing.maximum_stay_days} nuits` : null],
               ["Charges", property.charges_included ? "Incluses" : formatPrice(property.additional_charges)],
             ]}
           />

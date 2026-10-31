@@ -79,7 +79,7 @@ export const DEPOSIT_ACTION_LABELS: Record<DepositAction, string> = {
 };
 
 export const STAY_TYPE_LABELS: Record<StayType, string> = {
-  full_day: "Journée",
+  full_day: "Nuitée",
   half_day: "Demi-journée",
   passage: "Passage",
 };

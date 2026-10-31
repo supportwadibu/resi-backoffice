@@ -242,6 +242,8 @@ export interface Property {
     price_tiers?: { min_days: number; discount_percent: number }[] | null;
     minimum_stay_days?: number;
     maximum_stay_days?: number | null;
+    /** Heure de départ « HH:mm », fin de chaque nuit ; absente d'une API antérieure. */
+    checkout_time?: string;
   };
   charges_included: boolean;
   additional_charges: number;
