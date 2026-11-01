@@ -6,7 +6,7 @@ import { ButtonLink } from "@/components/button";
 import { DetailList, EmptyState, PageHeader, Section } from "@/components/page-header";
 import { PropertySummaryTable } from "@/components/property-summary-table";
 import { SECTION_ICONS } from "@/components/shell/navigation";
-import { ActiveBadge, OwnerStatusBadge } from "@/components/status-badges";
+import { AccountStatusBadge, OwnerStatusBadge } from "@/components/status-badges";
 import { apiFetchOrNotFound } from "@/lib/api/client";
 import type { Owner, OwnerPortfolio, OwnerProfile } from "@/lib/api/types";
 import { formatDate, formatDateTime, formatNumber, formatOptionalDate } from "@/lib/format";
@@ -36,7 +36,7 @@ export default async function ProprietaireDetailPage({ params }: PageProps<"/pro
         description={
           <span className="flex flex-wrap items-center gap-2">
             <OwnerStatusBadge status={owner.owner_status} />
-            <ActiveBadge active={owner.is_active} />
+            <AccountStatusBadge active={owner.is_active} verified={owner.is_verified} />
             {!owner.is_verified && <span>OTP non vérifié : validation impossible pour l&apos;instant.</span>}
           </span>
         }

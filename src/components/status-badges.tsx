@@ -118,9 +118,17 @@ export function FeedbackStatusBadge({ status }: { status: FeedbackStatus }) {
   return <Badge tone={FEEDBACK_TONES[status]}>{FEEDBACK_STATUS_LABELS[status]}</Badge>;
 }
 
-/** Désactiver un compte est une sanction : rouge, et non neutre comme un plan inactif. */
-export function ActiveBadge({ active }: { active: boolean }) {
-  return active ? <Badge tone={T.done}>Actif</Badge> : <Badge tone={T.stopped}>Désactivé</Badge>;
+/**
+ * État d'un compte. Désactiver est une sanction : rouge, et non neutre comme
+ * un plan inactif. Un compte dont le code d'inscription n'a pas été saisi
+ * attend une action de son titulaire (ambre) : `is_active` y vaut `true`, mais
+ * la connexion lui reste fermée — l'afficher « Actif » laissait croire le
+ * contraire. La sanction l'emporte : elle dit ce que l'équipe a décidé.
+ */
+export function AccountStatusBadge({ active, verified }: { active: boolean; verified: boolean }) {
+  if (!active) return <Badge tone={T.stopped}>Désactivé</Badge>;
+  if (!verified) return <Badge tone={T.waiting}>Non vérifié</Badge>;
+  return <Badge tone={T.done}>Actif</Badge>;
 }
 
 /** À verser attend l'équipe (ambre), versé est abouti, refusé arrêté par une décision. */
