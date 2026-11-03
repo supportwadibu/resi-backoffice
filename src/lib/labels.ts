@@ -1,4 +1,6 @@
 import type {
+  AuditMethod,
+  AuditOutcome,
   BookingSource,
   BookingStatus,
   ClientKind,
@@ -185,3 +187,18 @@ export const REDEMPTION_STATUS_LABELS: Record<RedemptionStatus, string> = {
 export function toOptions<K extends string>(labels: Record<K, string>) {
   return (Object.entries(labels) as [K, string][]).map(([value, label]) => ({ value, label }));
 }
+
+export const AUDIT_OUTCOME_LABELS: Record<AuditOutcome, string> = {
+  success: "Réussie",
+  client_error: "Refusée",
+  server_error: "Erreur serveur",
+};
+
+/** Le verbe HTTP dit en clair ce que la requête a voulu faire. */
+export const AUDIT_METHOD_LABELS: Record<AuditMethod, string> = {
+  GET: "Lecture",
+  POST: "Création",
+  PUT: "Remplacement",
+  PATCH: "Modification",
+  DELETE: "Suppression",
+};

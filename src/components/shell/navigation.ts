@@ -9,6 +9,7 @@ import {
   LayoutDashboard,
   type LucideIcon,
   MessageSquare,
+  ScrollText,
   TicketPercent,
   UserCheck,
   Users,
@@ -41,6 +42,7 @@ export const SECTION_ICONS = {
   notifications: Bell,
   withdrawals: Wallet,
   sponsorships: Gift,
+  auditLogs: ScrollText,
 } satisfies Record<string, LucideIcon>;
 
 export interface NavItem {
@@ -86,6 +88,10 @@ export const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
       { href: "/retraits", label: "Retraits", icon: SECTION_ICONS.withdrawals },
       { href: "/parrainages", label: "Parrainages", icon: SECTION_ICONS.sponsorships },
     ],
+  },
+  {
+    label: "Technique",
+    items: [{ href: "/journal", label: "Journal d'audit", icon: SECTION_ICONS.auditLogs }],
   },
 ];
 

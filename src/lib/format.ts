@@ -24,6 +24,12 @@ const dateTime = new Intl.DateTimeFormat("fr-FR", {
   timeZone: "Africa/Abidjan",
 });
 
+const timestamp = new Intl.DateTimeFormat("fr-FR", {
+  dateStyle: "medium",
+  timeStyle: "medium",
+  timeZone: "Africa/Abidjan",
+});
+
 const month = new Intl.DateTimeFormat("fr-FR", {
   month: "short",
   year: "2-digit",
@@ -49,6 +55,11 @@ export function formatDate(iso: string): string {
 
 export function formatDateTime(iso: string): string {
   return dateTime.format(new Date(iso));
+}
+
+/** Avec les secondes : dans un journal, plusieurs requêtes tombent dans la même minute. */
+export function formatTimestamp(iso: string): string {
+  return timestamp.format(new Date(iso));
 }
 
 /** Tiret pour une date absente plutôt qu'une cellule vide, qu'on lirait comme un oubli. */

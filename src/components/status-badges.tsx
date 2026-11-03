@@ -1,4 +1,5 @@
 import type {
+  AuditOutcome,
   BookingStatus,
   FeedbackStatus,
   OwnerStatus,
@@ -10,6 +11,7 @@ import type {
   WithdrawalStatus,
 } from "@/lib/api/types";
 import {
+  AUDIT_OUTCOME_LABELS,
   BOOKING_STATUS_LABELS,
   FEEDBACK_STATUS_LABELS,
   OWNER_STATUS_LABELS,
@@ -167,4 +169,24 @@ export const REDEMPTION_TONES: Record<RedemptionStatus, BadgeTone> = {
 
 export function RedemptionStatusBadge({ status }: { status: RedemptionStatus }) {
   return <Badge tone={REDEMPTION_TONES[status]}>{REDEMPTION_STATUS_LABELS[status]}</Badge>;
+}
+
+/**
+ * Requête réussie : abouti. Refusée (4xx) : arrêtée par une règle de l'API —
+ * jeton, droits, validation, conflit. Une panne serveur n'est la décision de
+ * personne mais demande qu'on intervienne : ambre, pour qu'elle ressorte d'une
+ * liste où les refus sont nombreux et le plus souvent normaux.
+ */
+export const AUDIT_OUTCOME_TONES: Record<AuditOutcome, BadgeTone> = {
+  success: T.done,
+  client_error: T.stopped,
+  server_error: T.waiting,
+};
+
+export function AuditOutcomeBadge({ outcome, status }: { outcome: AuditOutcome; status: number }) {
+  return (
+    <Badge tone={AUDIT_OUTCOME_TONES[outcome]}>
+      {status} · {AUDIT_OUTCOME_LABELS[outcome]}
+    </Badge>
+  );
 }

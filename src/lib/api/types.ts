@@ -704,3 +704,42 @@ export interface SponsorshipRedemption {
   user: SponsorshipUser | null;
   processed_by: string | null;
 }
+
+/** Issue d'une requête tracée, déduite de son statut HTTP. */
+export type AuditOutcome = "success" | "client_error" | "server_error";
+
+export type AuditMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+
+/** Trace d'une requête traitée par l'API. Voir `docs/specs/backoffice-admin.md`. */
+export interface AuditLog {
+  id: string;
+  /** `null` : requête anonyme (route publique ou jeton refusé). */
+  actor: {
+    id: string;
+    role: RoleName | null;
+    /** Nom figé au moment de l'action ; `null` sur les premières traces. */
+    full_name: string | null;
+    contact: string | null;
+  } | null;
+  method: string;
+  /** Motif de route, `/api/v1/admin/withdrawals/:id/paid`. */
+  route: string;
+  /** Chemin effectif, sans chaîne de requête ; `null` sur les premières traces. */
+  path: string | null;
+  params: Record<string, string>;
+  status: number;
+  outcome: AuditOutcome;
+  duration_ms: number | null;
+  error: {
+    code: string | null;
+    message: string;
+    /** Champs refusés par la validation, `champ : règle`. */
+    details: string[];
+    /** Pile d'appel, pour une panne serveur seulement. */
+    stack: string | null;
+  } | null;
+  ip_address: string;
+  user_agent: string;
+  request_id: string | null;
+  created_at: string;
+}

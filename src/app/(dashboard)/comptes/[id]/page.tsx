@@ -38,7 +38,15 @@ export default async function CompteDetailPage({ params }: PageProps<"/comptes/[
             {user.owner_status && <OwnerStatusBadge status={user.owner_status} />}
           </span>
         }
-        actions={<UserActions user={user} isSelf={user.id === me.id} />}
+        actions={
+          <>
+            <ButtonLink href={`/journal?actor_id=${encodeURIComponent(user.id)}`}>
+              <SECTION_ICONS.auditLogs aria-hidden className="size-4" />
+              Activité
+            </ButtonLink>
+            <UserActions user={user} isSelf={user.id === me.id} />
+          </>
+        }
       />
 
       <Section title="Identité" icon={IdCard}>
