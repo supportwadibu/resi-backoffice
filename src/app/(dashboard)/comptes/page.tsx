@@ -5,13 +5,13 @@ import { Input } from "@/components/input";
 import { EmptyState, PageHeader } from "@/components/page-header";
 import { Pagination } from "@/components/pagination";
 import { Select } from "@/components/select";
-import { ActiveBadge, OwnerStatusBadge } from "@/components/status-badges";
+import { AccountStatusBadge, OwnerStatusBadge } from "@/components/status-badges";
 import { Cell, PersonCell, Row, Table } from "@/components/table";
 import { apiFetch } from "@/lib/api/client";
 import type { Owner, Paginated, RoleName, User } from "@/lib/api/types";
 import { formatDate, formatOptionalDate } from "@/lib/format";
 import { ROLE_LABELS, toOptions } from "@/lib/labels";
-import { boolParam, enumParam, pageParam, param } from "@/lib/search-params";
+import { enumParam, pageParam, param } from "@/lib/search-params";
 
 import { CreateUser } from "./create-user";
 
@@ -19,17 +19,38 @@ export const metadata: Metadata = { title: "Comptes" };
 
 const ROLES = Object.keys(ROLE_LABELS) as RoleName[];
 
+/**
+ * États du filtre, calqués sur `AccountStatusBadge` : chaque compte tombe
+ * dans un seul. « Actifs » exclut les inscriptions non vérifiées, qui portent
+ * pourtant `is_active: true` mais ne peuvent pas se connecter.
+ */
+const ACCOUNT_STATES = {
+  actif: { label: "Actifs", query: { is_active: true, is_verified: true } },
+  non_verifie: { label: "Non vérifiés", query: { is_active: true, is_verified: false } },
+  desactive: { label: "Désactivés", query: { is_active: false } },
+} as const;
+
+type AccountState = keyof typeof ACCOUNT_STATES;
+
+const STATES = Object.keys(ACCOUNT_STATES) as AccountState[];
+
 export default async function ComptesPage({ searchParams }: PageProps<"/comptes">) {
   const params = await searchParams;
   const filters = {
     role: enumParam(params, "role", ROLES),
-    is_active: boolParam(params, "is_active"),
+    etat: enumParam(params, "etat", STATES),
     q: param(params, "q"),
   };
 
   const [{ data: users, meta }, { data: owners }] = await Promise.all([
     apiFetch<Paginated<User>>("/admin/users", {
-      query: { ...filters, page: pageParam(params), per_page: 25 },
+      query: {
+        role: filters.role,
+        q: filters.q,
+        ...(filters.etat ? ACCOUNT_STATES[filters.etat].query : {}),
+        page: pageParam(params),
+        per_page: 25,
+      },
     }),
     // Propriétaires proposés à la création d'un gérant. Plafond de l'API :
     // au-delà de 100, la liste deviendra une recherche.
@@ -68,13 +89,10 @@ export default async function ComptesPage({ searchParams }: PageProps<"/comptes"
         />
         <Select
           label="État"
-          name="is_active"
-          defaultValue={filters.is_active === undefined ? "" : String(filters.is_active)}
+          name="etat"
+          defaultValue={filters.etat ?? ""}
           placeholder="Tous"
-          options={[
-            { value: "true", label: "Actifs" },
-            { value: "false", label: "Désactivés" },
-          ]}
+          options={STATES.map((state) => ({ value: state, label: ACCOUNT_STATES[state].label }))}
         />
       </FilterBar>
 
@@ -98,7 +116,7 @@ export default async function ComptesPage({ searchParams }: PageProps<"/comptes"
                 </div>
               </Cell>
               <Cell>
-                <ActiveBadge active={user.is_active} />
+                <AccountStatusBadge active={user.is_active} verified={user.is_verified} />
               </Cell>
               <Cell className="whitespace-nowrap">{formatOptionalDate(user.last_login_at)}</Cell>
               <Cell className="whitespace-nowrap">{formatDate(user.created_at)}</Cell>

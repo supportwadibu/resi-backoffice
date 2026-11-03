@@ -64,7 +64,7 @@ export default async function ReservationsPage({ searchParams }: PageProps<"/res
                   {formatDate(booking.start_date)} → {formatDate(booking.end_date)}
                 </RowLink>
                 <div className="text-xs text-muted">
-                  {booking.days_count} jour{booking.days_count > 1 ? "s" : ""} ·{" "}
+                  {booking.days_count} nuit{booking.days_count > 1 ? "s" : ""} ·{" "}
                   {BOOKING_SOURCE_LABELS[booking.source ?? "online"]}
                 </div>
               </Cell>

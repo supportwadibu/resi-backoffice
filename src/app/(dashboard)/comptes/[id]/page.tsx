@@ -6,7 +6,7 @@ import { Badge } from "@/components/badge";
 import { ButtonLink } from "@/components/button";
 import { DetailList, PageHeader, Section } from "@/components/page-header";
 import { SECTION_ICONS } from "@/components/shell/navigation";
-import { ActiveBadge, OwnerStatusBadge, SubscriptionStatusBadge } from "@/components/status-badges";
+import { AccountStatusBadge, OwnerStatusBadge, SubscriptionStatusBadge } from "@/components/status-badges";
 import { apiFetchOrNotFound } from "@/lib/api/client";
 import type { UserDetail } from "@/lib/api/types";
 import { getCurrentUser } from "@/lib/auth/session";
@@ -34,11 +34,19 @@ export default async function CompteDetailPage({ params }: PageProps<"/comptes/[
         description={
           <span className="flex flex-wrap items-center gap-2">
             {ROLE_LABELS[user.role]}
-            <ActiveBadge active={user.is_active} />
+            <AccountStatusBadge active={user.is_active} verified={user.is_verified} />
             {user.owner_status && <OwnerStatusBadge status={user.owner_status} />}
           </span>
         }
-        actions={<UserActions user={user} isSelf={user.id === me.id} />}
+        actions={
+          <>
+            <ButtonLink href={`/journal?actor_id=${encodeURIComponent(user.id)}`}>
+              <SECTION_ICONS.auditLogs aria-hidden className="size-4" />
+              Activité
+            </ButtonLink>
+            <UserActions user={user} isSelf={user.id === me.id} />
+          </>
+        }
       />
 
       <Section title="Identité" icon={IdCard}>

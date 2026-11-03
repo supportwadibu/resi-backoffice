@@ -1,4 +1,5 @@
 import type {
+  AuditOutcome,
   BookingStatus,
   FeedbackStatus,
   OwnerStatus,
@@ -10,6 +11,7 @@ import type {
   WithdrawalStatus,
 } from "@/lib/api/types";
 import {
+  AUDIT_OUTCOME_LABELS,
   BOOKING_STATUS_LABELS,
   FEEDBACK_STATUS_LABELS,
   OWNER_STATUS_LABELS,
@@ -118,9 +120,17 @@ export function FeedbackStatusBadge({ status }: { status: FeedbackStatus }) {
   return <Badge tone={FEEDBACK_TONES[status]}>{FEEDBACK_STATUS_LABELS[status]}</Badge>;
 }
 
-/** Désactiver un compte est une sanction : rouge, et non neutre comme un plan inactif. */
-export function ActiveBadge({ active }: { active: boolean }) {
-  return active ? <Badge tone={T.done}>Actif</Badge> : <Badge tone={T.stopped}>Désactivé</Badge>;
+/**
+ * État d'un compte. Désactiver est une sanction : rouge, et non neutre comme
+ * un plan inactif. Un compte dont le code d'inscription n'a pas été saisi
+ * attend une action de son titulaire (ambre) : `is_active` y vaut `true`, mais
+ * la connexion lui reste fermée — l'afficher « Actif » laissait croire le
+ * contraire. La sanction l'emporte : elle dit ce que l'équipe a décidé.
+ */
+export function AccountStatusBadge({ active, verified }: { active: boolean; verified: boolean }) {
+  if (!active) return <Badge tone={T.stopped}>Désactivé</Badge>;
+  if (!verified) return <Badge tone={T.waiting}>Non vérifié</Badge>;
+  return <Badge tone={T.done}>Actif</Badge>;
 }
 
 /** À verser attend l'équipe (ambre), versé est abouti, refusé arrêté par une décision. */
@@ -159,4 +169,24 @@ export const REDEMPTION_TONES: Record<RedemptionStatus, BadgeTone> = {
 
 export function RedemptionStatusBadge({ status }: { status: RedemptionStatus }) {
   return <Badge tone={REDEMPTION_TONES[status]}>{REDEMPTION_STATUS_LABELS[status]}</Badge>;
+}
+
+/**
+ * Requête réussie : abouti. Refusée (4xx) : arrêtée par une règle de l'API —
+ * jeton, droits, validation, conflit. Une panne serveur n'est la décision de
+ * personne mais demande qu'on intervienne : ambre, pour qu'elle ressorte d'une
+ * liste où les refus sont nombreux et le plus souvent normaux.
+ */
+export const AUDIT_OUTCOME_TONES: Record<AuditOutcome, BadgeTone> = {
+  success: T.done,
+  client_error: T.stopped,
+  server_error: T.waiting,
+};
+
+export function AuditOutcomeBadge({ outcome, status }: { outcome: AuditOutcome; status: number }) {
+  return (
+    <Badge tone={AUDIT_OUTCOME_TONES[outcome]}>
+      {status} · {AUDIT_OUTCOME_LABELS[outcome]}
+    </Badge>
+  );
 }

@@ -106,7 +106,7 @@ export default async function ReservationDetailPage({ params }: PageProps<"/rese
             items={[
               [
                 "Tarif",
-                `${formatPrice(booking.daily_price)} × ${booking.days_count} jour${booking.days_count > 1 ? "s" : ""}`,
+                `${formatPrice(booking.daily_price)} × ${booking.days_count} nuit${booking.days_count > 1 ? "s" : ""}`,
               ],
               ["Sous-total", formatPrice(booking.subtotal_amount)],
               [
@@ -165,7 +165,7 @@ export default async function ReservationDetailPage({ params }: PageProps<"/rese
             <DetailList
               items={[
                 ["Sortie vendue", booking.planned_check_out_at ? formatDateTime(booking.planned_check_out_at) : null],
-                ["Durée vendue", booking.planned_days_count ? `${booking.planned_days_count} jours` : null],
+                ["Durée vendue", booking.planned_days_count ? `${booking.planned_days_count} nuits` : null],
                 [
                   "Montant vendu",
                   booking.planned_total_amount !== undefined ? formatPrice(booking.planned_total_amount) : null,
