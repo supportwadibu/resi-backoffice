@@ -8,6 +8,7 @@ import { DetailList, PageHeader, Section } from "@/components/page-header";
 import { SECTION_ICONS } from "@/components/shell/navigation";
 import { AccountStatusBadge, OwnerStatusBadge, SubscriptionStatusBadge } from "@/components/status-badges";
 import { apiFetch, apiFetchOrNotFound } from "@/lib/api/client";
+import { ApiError } from "@/lib/api/errors";
 import type { PurgeItem, PurgePreview, UserDetail } from "@/lib/api/types";
 import { getCurrentUser } from "@/lib/auth/session";
 import { formatDate, formatDateTime, formatOptionalDate, formatPrice } from "@/lib/format";
@@ -28,9 +29,8 @@ export default async function CompteDetailPage({ params }: PageProps<"/comptes/[
 
   // Aperçu lu seulement pour un compte supprimé : une trentaine de comptages,
   // inutiles tant que la suppression définitive n'est pas proposée.
-  const purge = user.deleted_at
-    ? (await apiFetch<{ data: PurgePreview }>(`/admin/users/${encodeURIComponent(id)}/purge`)).data
-    : null;
+  const preview = user.deleted_at ? await loadPurgePreview(id) : null;
+  const purge = preview && "data" in preview ? preview.data : null;
   const purgeCount = purge?.items.reduce((sum, item) => sum + item.count, 0);
 
   return (
@@ -70,6 +70,15 @@ export default async function CompteDetailPage({ params }: PageProps<"/comptes/[
           ]}
         />
       </Section>
+
+      {preview && "error" in preview && (
+        <Section title="Suppression définitive" icon={Trash2}>
+          <p className="flex items-start gap-2 text-sm text-danger">
+            <TriangleAlert aria-hidden className="mt-0.5 size-4 shrink-0" />
+            Aperçu indisponible : {preview.error}
+          </p>
+        </Section>
+      )}
 
       {purge && (
         <Section title="Suppression définitive" icon={Trash2}>
@@ -161,6 +170,21 @@ export default async function CompteDetailPage({ params }: PageProps<"/comptes/[
       )}
     </div>
   );
+}
+
+/**
+ * Aperçu de la suppression définitive, sans faire tomber la fiche s'il
+ * échoue : restaurer le compte doit rester possible même quand l'aperçu,
+ * fait d'une trentaine de requêtes, bute sur l'une d'elles.
+ */
+async function loadPurgePreview(id: string): Promise<{ data: PurgePreview } | { error: string }> {
+  try {
+    return await apiFetch<{ data: PurgePreview }>(`/admin/users/${encodeURIComponent(id)}/purge`);
+  } catch (error) {
+    // Seules les erreurs de l'API : la redirection d'un 401 doit se propager.
+    if (error instanceof ApiError) return { error: error.message };
+    throw error;
+  }
 }
 
 function PurgeList({ title, items, empty }: { title: string; items: PurgeItem[]; empty?: string }) {
