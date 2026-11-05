@@ -92,8 +92,32 @@ export interface User {
   /** `null` hors rôle `proprio`. */
   owner_status: OwnerStatus | null;
   last_login_at: string | null;
+  /** Renseignée tant que le compte est supprimé, donc restaurable. */
+  deleted_at: string | null;
   created_at: string;
   updated_at: string;
+}
+
+/** Ensemble de données effacé avec un compte, et son volume. */
+export interface PurgeItem {
+  key: string;
+  label: string;
+  count: number;
+}
+
+/** Ce qu'emporterait la suppression définitive d'un compte supprimé. */
+export interface PurgePreview {
+  items: PurgeItem[];
+  /** Données d'autres comptes qui le citent, conservées avec un nom figé. */
+  kept: PurgeItem[];
+  /** Argent encore dû, séjours en cours : signalés, jamais bloquants. */
+  warnings: { code: string; message: string }[];
+}
+
+export interface PurgeReport {
+  user_id: string;
+  items: PurgeItem[];
+  files_deleted: number;
 }
 
 export interface UserSummary {

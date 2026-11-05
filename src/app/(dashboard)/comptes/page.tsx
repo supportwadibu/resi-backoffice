@@ -20,14 +20,20 @@ export const metadata: Metadata = { title: "Comptes" };
 const ROLES = Object.keys(ROLE_LABELS) as RoleName[];
 
 /**
- * États du filtre, calqués sur `AccountStatusBadge` : chaque compte tombe
- * dans un seul. « Actifs » exclut les inscriptions non vérifiées, qui portent
- * pourtant `is_active: true` mais ne peuvent pas se connecter.
+ * États du filtre, calqués sur `AccountStatusBadge`. « Actifs » exclut les
+ * inscriptions non vérifiées, qui portent pourtant `is_active: true` mais ne
+ * peuvent pas se connecter.
+ *
+ * Seule exception à « un compte, un état » : un compte supprimé est aussi
+ * désactivé, et figure sous les deux. L'API ne sait pas les séparer — les
+ * comptes antérieurs à la suppression ne portent pas `is_deleted`, et
+ * Firestore les écarterait d'un filtre `is_deleted == false`.
  */
 const ACCOUNT_STATES = {
   actif: { label: "Actifs", query: { is_active: true, is_verified: true } },
   non_verifie: { label: "Non vérifiés", query: { is_active: true, is_verified: false } },
   desactive: { label: "Désactivés", query: { is_active: false } },
+  supprime: { label: "Supprimés", query: { deleted: true } },
 } as const;
 
 type AccountState = keyof typeof ACCOUNT_STATES;
@@ -116,7 +122,7 @@ export default async function ComptesPage({ searchParams }: PageProps<"/comptes"
                 </div>
               </Cell>
               <Cell>
-                <AccountStatusBadge active={user.is_active} verified={user.is_verified} />
+                <AccountStatusBadge active={user.is_active} verified={user.is_verified} deleted={user.deleted_at !== null} />
               </Cell>
               <Cell className="whitespace-nowrap">{formatOptionalDate(user.last_login_at)}</Cell>
               <Cell className="whitespace-nowrap">{formatDate(user.created_at)}</Cell>

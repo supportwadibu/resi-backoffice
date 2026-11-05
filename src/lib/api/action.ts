@@ -18,10 +18,14 @@ import { ApiError } from "./errors";
  */
 export async function runAction<T>(
   write: () => Promise<{ data: T; message?: string }>,
+  // `false` quand l'écriture fait disparaître la page appelante (suppression
+  // définitive) : la rafraîchir afficherait « introuvable » avant que le
+  // client ne quitte la page.
+  options: { refresh?: boolean } = {},
 ): Promise<ActionResult<T>> {
   try {
     const { data, message } = await write();
-    refresh();
+    if (options.refresh !== false) refresh();
     return { ok: true, data, message };
   } catch (error) {
     if (error instanceof ApiError) return { ok: false, error: error.message, code: error.code };

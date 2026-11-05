@@ -127,7 +127,20 @@ export function FeedbackStatusBadge({ status }: { status: FeedbackStatus }) {
  * la connexion lui reste fermée — l'afficher « Actif » laissait croire le
  * contraire. La sanction l'emporte : elle dit ce que l'équipe a décidé.
  */
-export function AccountStatusBadge({ active, verified }: { active: boolean; verified: boolean }) {
+/**
+ * Un compte supprimé est hors circuit en attendant sa restauration ou son
+ * effacement : il prime sur « Désactivé », qu'il implique.
+ */
+export function AccountStatusBadge({
+  active,
+  verified,
+  deleted = false,
+}: {
+  active: boolean;
+  verified: boolean;
+  deleted?: boolean;
+}) {
+  if (deleted) return <Badge tone={T.idle}>Supprimé</Badge>;
   if (!active) return <Badge tone={T.stopped}>Désactivé</Badge>;
   if (!verified) return <Badge tone={T.waiting}>Non vérifié</Badge>;
   return <Badge tone={T.done}>Actif</Badge>;

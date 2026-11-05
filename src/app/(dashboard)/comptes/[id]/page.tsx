@@ -1,4 +1,4 @@
-import { IdCard, UserCheck, UserRound } from "lucide-react";
+import { IdCard, Trash2, TriangleAlert, UserCheck, UserRound } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -7,8 +7,8 @@ import { ButtonLink } from "@/components/button";
 import { DetailList, PageHeader, Section } from "@/components/page-header";
 import { SECTION_ICONS } from "@/components/shell/navigation";
 import { AccountStatusBadge, OwnerStatusBadge, SubscriptionStatusBadge } from "@/components/status-badges";
-import { apiFetchOrNotFound } from "@/lib/api/client";
-import type { UserDetail } from "@/lib/api/types";
+import { apiFetch, apiFetchOrNotFound } from "@/lib/api/client";
+import type { PurgeItem, PurgePreview, UserDetail } from "@/lib/api/types";
 import { getCurrentUser } from "@/lib/auth/session";
 import { formatDate, formatDateTime, formatOptionalDate, formatPrice } from "@/lib/format";
 import { ROLE_LABELS } from "@/lib/labels";
@@ -26,6 +26,13 @@ export default async function CompteDetailPage({ params }: PageProps<"/comptes/[
     getCurrentUser(),
   ]);
 
+  // Aperçu lu seulement pour un compte supprimé : une trentaine de comptages,
+  // inutiles tant que la suppression définitive n'est pas proposée.
+  const purge = user.deleted_at
+    ? (await apiFetch<{ data: PurgePreview }>(`/admin/users/${encodeURIComponent(id)}/purge`)).data
+    : null;
+  const purgeCount = purge?.items.reduce((sum, item) => sum + item.count, 0);
+
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
@@ -34,7 +41,7 @@ export default async function CompteDetailPage({ params }: PageProps<"/comptes/[
         description={
           <span className="flex flex-wrap items-center gap-2">
             {ROLE_LABELS[user.role]}
-            <AccountStatusBadge active={user.is_active} verified={user.is_verified} />
+            <AccountStatusBadge active={user.is_active} verified={user.is_verified} deleted={user.deleted_at !== null} />
             {user.owner_status && <OwnerStatusBadge status={user.owner_status} />}
           </span>
         }
@@ -44,7 +51,7 @@ export default async function CompteDetailPage({ params }: PageProps<"/comptes/[
               <SECTION_ICONS.auditLogs aria-hidden className="size-4" />
               Activité
             </ButtonLink>
-            <UserActions user={user} isSelf={user.id === me.id} />
+            <UserActions user={user} isSelf={user.id === me.id} purgeCount={purgeCount} />
           </>
         }
       />
@@ -59,9 +66,42 @@ export default async function CompteDetailPage({ params }: PageProps<"/comptes/[
             ["Sessions ouvertes", user.active_sessions],
             ["Dernière connexion", user.last_login_at ? formatDateTime(user.last_login_at) : "Jamais"],
             ["Inscription", formatDate(user.created_at)],
+            ...(user.deleted_at ? [["Supprimé le", formatDateTime(user.deleted_at)] as [string, string]] : []),
           ]}
         />
       </Section>
+
+      {purge && (
+        <Section title="Suppression définitive" icon={Trash2}>
+          <div className="flex flex-col gap-4 text-sm">
+            {purge.warnings.length > 0 && (
+              <ul className="flex flex-col gap-2">
+                {purge.warnings.map((warning) => (
+                  <li key={warning.code} className="flex items-start gap-2 text-accent-amber">
+                    <TriangleAlert aria-hidden className="mt-0.5 size-4 shrink-0" />
+                    {warning.message}
+                  </li>
+                ))}
+              </ul>
+            )}
+            <PurgeList
+              title="Effacé avec le compte"
+              items={purge.items}
+              empty="Aucune donnée rattachée : seul le compte sera effacé."
+            />
+            <p className="text-muted">
+              Les photos d&apos;annonce et les pièces d&apos;identité sont effacées avec lui. Le journal
+              d&apos;audit est conservé.
+            </p>
+            {purge.kept.length > 0 && (
+              <PurgeList
+                title="Conservé chez les propriétaires, au nom figé"
+                items={purge.kept}
+              />
+            )}
+          </div>
+        </Section>
+      )}
 
       {user.owner && (
         <Section
@@ -118,6 +158,19 @@ export default async function CompteDetailPage({ params }: PageProps<"/comptes/[
             ]}
           />
         </Section>
+      )}
+    </div>
+  );
+}
+
+function PurgeList({ title, items, empty }: { title: string; items: PurgeItem[]; empty?: string }) {
+  return (
+    <div className="flex flex-col gap-2">
+      <h3 className="font-medium">{title}</h3>
+      {items.length === 0 ? (
+        <p className="text-muted">{empty}</p>
+      ) : (
+        <DetailList items={items.map((item) => [item.label, item.count])} />
       )}
     </div>
   );
