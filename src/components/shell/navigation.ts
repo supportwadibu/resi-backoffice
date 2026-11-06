@@ -1,5 +1,6 @@
 import {
   BedDouble,
+  BookUser,
   Building2,
   CalendarCheck,
   CreditCard,
@@ -32,6 +33,7 @@ export const SECTION_ICONS = {
   dashboard: LayoutDashboard,
   owners: UserCheck,
   users: Users,
+  clients: BookUser,
   residences: Building2,
   properties: BedDouble,
   bookings: CalendarCheck,
@@ -62,6 +64,7 @@ export const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
     items: [
       { href: "/proprietaires", label: "Propriétaires", icon: SECTION_ICONS.owners },
       { href: "/comptes", label: "Comptes", icon: SECTION_ICONS.users },
+      { href: "/clients", label: "Clients", icon: SECTION_ICONS.clients },
     ],
   },
   {

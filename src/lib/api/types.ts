@@ -767,3 +767,76 @@ export interface AuditLog {
   request_id: string | null;
   created_at: string;
 }
+
+/** Motif d'une fiche écartée par l'import du carnet clients. */
+export type ClientImportSkipReason = "owner_not_found" | "already_exists" | "duplicate_phone";
+
+/** Rapport de `POST /admin/clients/import`. */
+export interface ClientImportReport {
+  /** Fiches lues dans le fichier. */
+  total: number;
+  created: number;
+  skipped: {
+    /** Rang dans le fichier, à partir de 1. */
+    line: number;
+    id: string;
+    full_name: string;
+    phone: string;
+    reason: ClientImportSkipReason;
+    message: string;
+  }[];
+}
+
+/** Tranche de `GET /admin/stats/stay-types` : type de séjour, puis durée d'un séjour complet. */
+export type StayBucket =
+  | "passage"
+  | "half_day"
+  | "one_day"
+  | "two_to_six_days"
+  | "seven_to_twenty_nine_days"
+  | "thirty_days_plus";
+
+export interface StayTypeBreakdown {
+  months: number;
+  from: string;
+  owner_id: string | null;
+  total_bookings: number;
+  buckets: {
+    key: StayBucket;
+    bookings: number;
+    share_percent: number;
+    revenue: number;
+    /** Jours immobilisés, pondérés comme le taux d'occupation. */
+    occupancy_days: number;
+  }[];
+}
+
+/** `GET /admin/users/:id/export/preview` : volumes de chaque section exportable. */
+export interface AccountExportPreview {
+  account: { id: string; role: string; full_name: string | null };
+  sections: {
+    key: string;
+    label: string;
+    /** Cochée d'office pour le rôle du compte. */
+    default_selected: boolean;
+    count: number;
+  }[];
+}
+
+/** Rapport de `POST /admin/users/import`. */
+export interface AccountImportReport {
+  account: {
+    id: string;
+    full_name: string | null;
+    /** `existing` : compte déjà présent, conservé tel quel et complété. */
+    status: "created" | "existing";
+    matched_by: "id" | "email" | "phone" | null;
+  };
+  sections: {
+    key: string;
+    label: string;
+    created: number;
+    existing: number;
+    rejected: number;
+  }[];
+}

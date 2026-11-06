@@ -14,6 +14,7 @@ import { getCurrentUser } from "@/lib/auth/session";
 import { formatDate, formatDateTime, formatOptionalDate, formatPrice } from "@/lib/format";
 import { ROLE_LABELS } from "@/lib/labels";
 
+import { AccountExportButton } from "./account-export-button";
 import { UserActions } from "./user-actions";
 
 export const metadata: Metadata = { title: "Compte" };
@@ -51,6 +52,7 @@ export default async function CompteDetailPage({ params }: PageProps<"/comptes/[
               <SECTION_ICONS.auditLogs aria-hidden className="size-4" />
               Activité
             </ButtonLink>
+            <AccountExportButton userId={user.id} />
             <UserActions user={user} isSelf={user.id === me.id} purgeCount={purgeCount} />
           </>
         }
