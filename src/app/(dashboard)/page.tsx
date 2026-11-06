@@ -24,8 +24,14 @@ import {
   PROPERTY_TONES,
   SUBSCRIPTION_TONES,
 } from "@/components/status-badges";
+import { StayTypeBreakdown } from "@/components/stay-type-breakdown";
 import { apiFetch } from "@/lib/api/client";
-import type { PlatformStats, RevenueSeries, SubscriptionRevenue } from "@/lib/api/types";
+import type {
+  PlatformStats,
+  RevenueSeries,
+  StayTypeBreakdown as StayTypeBreakdownData,
+  SubscriptionRevenue,
+} from "@/lib/api/types";
 import { formatDateTime, formatNumber, formatPercent, formatPrice } from "@/lib/format";
 import {
   BOOKING_SOURCE_LABELS,
@@ -41,12 +47,13 @@ import { RevenueChart } from "./revenue-chart";
 import { SubscriptionRevenueChart, type RevenueMonth } from "./subscription-revenue-chart";
 
 export default async function DashboardPage() {
-  const [{ data: stats }, { data: series }, { data: resi }] = await Promise.all([
+  const [{ data: stats }, { data: series }, { data: resi }, { data: stays }] = await Promise.all([
     apiFetch<{ data: PlatformStats }>("/admin/stats"),
     apiFetch<{ data: RevenueSeries }>("/admin/stats/revenue", { query: { months: 12 } }),
     apiFetch<{ data: SubscriptionRevenue }>("/admin/stats/subscriptions", {
       query: { months_back: 12, months_ahead: 6 },
     }),
+    apiFetch<{ data: StayTypeBreakdownData }>("/admin/stats/stay-types", { query: { months: 12 } }),
   ]);
 
   const growth = stats.revenue.growth_percent;
@@ -223,6 +230,10 @@ export default async function DashboardPage() {
           </div>
         </DashboardGroup>
       </div>
+
+      <DashboardGroup title="Séjours" className="mt-8">
+        <StayTypeBreakdown data={stays} />
+      </DashboardGroup>
 
       <DashboardGroup title="Répartitions" className="mt-8">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">

@@ -10,6 +10,7 @@ import type {
   IdDocumentType,
   OwnerStatus,
   PlanTier,
+  StayBucket,
   PromoCodeType,
   PropertyStatus,
   PropertyType,
@@ -84,6 +85,16 @@ export const STAY_TYPE_LABELS: Record<StayType, string> = {
   full_day: "Nuitée",
   half_day: "Demi-journée",
   passage: "Passage",
+};
+
+/** Tranches de la répartition des séjours, dans l'ordre de durée. */
+export const STAY_BUCKET_LABELS: Record<StayBucket, string> = {
+  passage: "Passage",
+  half_day: "Demi-journée",
+  one_day: "1 nuitée",
+  two_to_six_days: "2 à 6 jours",
+  seven_to_twenty_nine_days: "7 à 29 jours",
+  thirty_days_plus: "30 jours et plus",
 };
 
 export const CLIENT_KIND_LABELS: Record<ClientKind, string> = {

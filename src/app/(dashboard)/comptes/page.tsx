@@ -13,6 +13,7 @@ import { formatDate, formatOptionalDate } from "@/lib/format";
 import { ROLE_LABELS, toOptions } from "@/lib/labels";
 import { enumParam, pageParam, param } from "@/lib/search-params";
 
+import { AccountImportButton } from "./account-import-button";
 import { CreateUser } from "./create-user";
 
 export const metadata: Metadata = { title: "Comptes" };
@@ -75,7 +76,12 @@ export default async function ComptesPage({ searchParams }: PageProps<"/comptes"
       <PageHeader
         title="Comptes"
         description="Tous les comptes de la plateforme, tous rôles confondus."
-        actions={<CreateUser owners={ownerOptions} />}
+        actions={
+          <>
+            <AccountImportButton />
+            <CreateUser owners={ownerOptions} />
+          </>
+        }
       />
 
       <FilterBar key={JSON.stringify(filters)} path="/comptes" active={active}>

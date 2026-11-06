@@ -7,8 +7,14 @@ import { DetailList, EmptyState, PageHeader, Section } from "@/components/page-h
 import { PropertySummaryTable } from "@/components/property-summary-table";
 import { SECTION_ICONS } from "@/components/shell/navigation";
 import { AccountStatusBadge, OwnerStatusBadge } from "@/components/status-badges";
-import { apiFetchOrNotFound } from "@/lib/api/client";
-import type { Owner, OwnerPortfolio, OwnerProfile } from "@/lib/api/types";
+import { StayTypeBreakdown } from "@/components/stay-type-breakdown";
+import { apiFetch, apiFetchOrNotFound } from "@/lib/api/client";
+import type {
+  Owner,
+  OwnerPortfolio,
+  OwnerProfile,
+  StayTypeBreakdown as StayTypeBreakdownData,
+} from "@/lib/api/types";
 import { formatDate, formatDateTime, formatNumber, formatOptionalDate } from "@/lib/format";
 import { ID_DOCUMENT_LABELS } from "@/lib/labels";
 
@@ -20,10 +26,13 @@ export const metadata: Metadata = { title: "Propriétaire" };
 export default async function ProprietaireDetailPage({ params }: PageProps<"/proprietaires/[id]">) {
   const { id } = await params;
   const base = `/admin/owners/${encodeURIComponent(id)}`;
-  const [{ data: owner }, { data: profile }, { data: portfolio }] = await Promise.all([
+  const [{ data: owner }, { data: profile }, { data: portfolio }, { data: stays }] = await Promise.all([
     apiFetchOrNotFound<{ data: Owner }>(base),
     apiFetchOrNotFound<{ data: OwnerProfile }>(`${base}/profile`),
     apiFetchOrNotFound<{ data: OwnerPortfolio }>(`${base}/portfolio`),
+    apiFetch<{ data: StayTypeBreakdownData }>("/admin/stats/stay-types", {
+      query: { months: 12, owner_id: id },
+    }),
   ]);
 
   const address = [profile.address, profile.city, profile.country].filter(Boolean).join(", ");
@@ -111,6 +120,8 @@ export default async function ProprietaireDetailPage({ params }: PageProps<"/pro
           <p className="text-sm text-muted">Le propriétaire n&apos;a pas encore déposé son dossier.</p>
         )}
       </Section>
+
+      <StayTypeBreakdown data={stays} title={`Ses types de séjour · ${stays.months} derniers mois`} />
 
       <section>
         <h2 className="mb-1 font-semibold">Portefeuille</h2>

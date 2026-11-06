@@ -20,6 +20,11 @@ const DEVICE_HEADERS = {
 interface RequestOptions {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: unknown;
+  /**
+   * Corps multipart, à la place de `body` : un fichier relayé vers l'API.
+   * `fetch` pose lui-même le `Content-Type` et sa frontière.
+   */
+  form?: FormData;
   query?: Record<string, string | number | boolean | undefined>;
   headers?: Record<string, string>;
   /** Faux pour les routes publiques (`/auth/login`, `/auth/refresh`). */
@@ -69,7 +74,7 @@ export async function apiFetchFile(path: string, options: RequestOptions = {}): 
 
 /** Requête authentifiée ; lève `ApiError` sur toute réponse non 2xx. */
 async function send(path: string, options: RequestOptions): Promise<Response> {
-  const { method = "GET", body, query, headers = {}, auth = true } = options;
+  const { method = "GET", body, form, query, headers = {}, auth = true } = options;
 
   const url = new URL(apiUrl() + path);
   for (const [key, value] of Object.entries(query ?? {})) {
@@ -100,7 +105,7 @@ async function send(path: string, options: RequestOptions): Promise<Response> {
     response = await fetch(url, {
       method,
       headers: requestHeaders,
-      body: body === undefined ? undefined : JSON.stringify(body),
+      body: form ?? (body === undefined ? undefined : JSON.stringify(body)),
       cache: "no-store",
     });
   } catch {
