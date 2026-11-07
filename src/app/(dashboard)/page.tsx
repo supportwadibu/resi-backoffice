@@ -14,6 +14,8 @@ import {
 import type { ReactNode } from "react";
 
 import { Breakdown, breakdownRows } from "@/components/breakdown";
+import { FilterBar } from "@/components/filter-bar";
+import { Input } from "@/components/input";
 import { PageHeader, Section } from "@/components/page-header";
 import { SECTION_ICONS } from "@/components/shell/navigation";
 import { StatTile } from "@/components/stat-tile";
@@ -42,18 +44,46 @@ import {
   ROLE_LABELS,
   SUBSCRIPTION_STATUS_LABELS,
 } from "@/lib/labels";
+import { dayParam, type SearchParams } from "@/lib/search-params";
 
 import { RevenueChart } from "./revenue-chart";
 import { SubscriptionRevenueChart, type RevenueMonth } from "./subscription-revenue-chart";
 
-export default async function DashboardPage() {
+/** Plafond de l'API pour une période de séjours : au-delà, elle répond 422. */
+const MAX_STAY_PERIOD_DAYS = 731;
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+/**
+ * Période des types de séjour, lue dans l'URL. Une période que l'API
+ * refuserait — fin avant le début, plus de deux ans — n'est pas envoyée :
+ * la page entière tomberait en erreur pour un filtre mal saisi. La section
+ * revient alors aux 12 derniers mois et dit pourquoi.
+ */
+function stayPeriod(params: SearchParams) {
+  const from = dayParam(params, "stays_from");
+  const to = dayParam(params, "stays_to");
+  if (!from) return { query: { months: 12 }, from, to, error: undefined };
+
+  const last = to ?? new Date().toISOString().slice(0, 10);
+  const days = (Date.parse(last) - Date.parse(from)) / DAY_MS + 1;
+  if (days < 1) {
+    return { query: { months: 12 }, from, to, error: "La date de fin précède la date de début." };
+  }
+  if (days > MAX_STAY_PERIOD_DAYS) {
+    return { query: { months: 12 }, from, to, error: "La période ne peut pas dépasser deux ans." };
+  }
+  return { query: { from, to }, from, to, error: undefined };
+}
+
+export default async function DashboardPage({ searchParams }: PageProps<"/">) {
+  const period = stayPeriod(await searchParams);
   const [{ data: stats }, { data: series }, { data: resi }, { data: stays }] = await Promise.all([
     apiFetch<{ data: PlatformStats }>("/admin/stats"),
     apiFetch<{ data: RevenueSeries }>("/admin/stats/revenue", { query: { months: 12 } }),
     apiFetch<{ data: SubscriptionRevenue }>("/admin/stats/subscriptions", {
       query: { months_back: 12, months_ahead: 6 },
     }),
-    apiFetch<{ data: StayTypeBreakdownData }>("/admin/stats/stay-types", { query: { months: 12 } }),
+    apiFetch<{ data: StayTypeBreakdownData }>("/admin/stats/stay-types", { query: period.query }),
   ]);
 
   const growth = stats.revenue.growth_percent;
@@ -232,6 +262,18 @@ export default async function DashboardPage() {
       </div>
 
       <DashboardGroup title="Séjours" className="mt-8">
+        {/* Sans défilement : la section est en bas de page, et l'admin doit
+            voir le résultat du filtre qu'il vient de poser. */}
+        <FilterBar
+          key={`${period.from ?? ""}|${period.to ?? ""}`}
+          path="/"
+          active={period.from !== undefined || period.to !== undefined}
+          scroll={false}
+        >
+          <Input label="Du" type="date" name="stays_from" defaultValue={period.from ?? ""} />
+          <Input label="Au" type="date" name="stays_to" defaultValue={period.to ?? ""} />
+        </FilterBar>
+        {period.error && <p className="mb-4 text-sm text-danger">{period.error} Affichage des 12 derniers mois.</p>}
         <StayTypeBreakdown data={stays} />
       </DashboardGroup>
 

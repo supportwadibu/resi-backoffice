@@ -11,19 +11,13 @@ import { apiFetch } from "@/lib/api/client";
 import type { AuditLog, AuditMethod, AuditOutcome, Paginated, RoleName } from "@/lib/api/types";
 import { formatTimestamp } from "@/lib/format";
 import { AUDIT_METHOD_LABELS, AUDIT_OUTCOME_LABELS, ROLE_LABELS, toOptions } from "@/lib/labels";
-import { enumParam, pageParam, param, type SearchParams } from "@/lib/search-params";
+import { dayParam, enumParam, pageParam, param } from "@/lib/search-params";
 
 export const metadata: Metadata = { title: "Journal d'audit" };
 
 const OUTCOMES = Object.keys(AUDIT_OUTCOME_LABELS) as AuditOutcome[];
 const METHODS = Object.keys(AUDIT_METHOD_LABELS) as AuditMethod[];
 const ROLES = Object.keys(ROLE_LABELS) as RoleName[];
-
-/** Un jour `AAAA-MM-JJ`, ou rien : l'API refuserait tout autre format par un 422. */
-function dayParam(params: SearchParams, key: string): string | undefined {
-  const value = param(params, key);
-  return value && /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : undefined;
-}
 
 export default async function JournalPage({ searchParams }: PageProps<"/journal">) {
   const params = await searchParams;

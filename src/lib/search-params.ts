@@ -30,6 +30,12 @@ export function boolParam(params: SearchParams, key: string): boolean | undefine
   return undefined;
 }
 
+/** Un jour `AAAA-MM-JJ`, ou rien : l'API refuserait tout autre format par un 422. */
+export function dayParam(params: SearchParams, key: string): string | undefined {
+  const value = param(params, key);
+  return value && /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : undefined;
+}
+
 export function pageParam(params: SearchParams): number {
   const page = Number(param(params, "page"));
   return Number.isInteger(page) && page > 0 ? page : 1;

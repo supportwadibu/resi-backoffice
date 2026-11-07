@@ -797,8 +797,11 @@ export type StayBucket =
   | "thirty_days_plus";
 
 export interface StayTypeBreakdown {
-  months: number;
+  /** Mois glissants ; `null` pour une période choisie par dates. */
+  months: number | null;
   from: string;
+  /** Dernier jour compté, inclus ; `null` pour les mois glissants. */
+  to: string | null;
   owner_id: string | null;
   total_bookings: number;
   buckets: {

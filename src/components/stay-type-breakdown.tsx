@@ -1,7 +1,7 @@
 import { Hourglass } from "lucide-react";
 
 import type { StayTypeBreakdown as Breakdown } from "@/lib/api/types";
-import { formatNumber, formatPrice } from "@/lib/format";
+import { formatDate, formatNumber, formatPrice } from "@/lib/format";
 import { STAY_BUCKET_LABELS } from "@/lib/labels";
 
 import { Section } from "./page-header";
@@ -19,8 +19,13 @@ export function StayTypeBreakdown({ data, title }: { data: Breakdown; title?: st
     null,
   );
 
+  const period =
+    data.months !== null
+      ? `${data.months} derniers mois`
+      : `du ${formatDate(data.from)} au ${formatDate(data.to ?? data.from)}`;
+
   return (
-    <Section title={title ?? `Types de séjour · ${data.months} derniers mois`} icon={Hourglass}>
+    <Section title={title ?? `Types de séjour · ${period}`} icon={Hourglass}>
       <p className="mb-4 text-sm text-muted">
         {data.total_bookings === 0
           ? "Aucune réservation commencée sur la période."
