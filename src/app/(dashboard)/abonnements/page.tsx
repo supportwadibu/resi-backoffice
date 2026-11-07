@@ -93,7 +93,14 @@ export default async function AbonnementsPage({ searchParams }: PageProps<"/abon
               </Cell>
               <Cell>
                 {subscription.is_trial ? (
-                  <Badge tone={STATUS_TONES.ongoing}>Essai gratuit</Badge>
+                  <>
+                    <Badge tone={STATUS_TONES.ongoing}>Essai gratuit</Badge>
+                    {/* Le forfait choisi pour l'essai ; un essai ouvert avant
+                        ce choix est renvoyé en Pro+, qu'il ouvrait. */}
+                    <div className="mt-1">
+                      <PlanTierBadge tier={subscription.plan_tier} />
+                    </div>
+                  </>
                 ) : subscription.plan_id ? (
                   <>
                     <div>

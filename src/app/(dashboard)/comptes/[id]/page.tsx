@@ -6,7 +6,12 @@ import { Badge } from "@/components/badge";
 import { ButtonLink } from "@/components/button";
 import { DetailList, PageHeader, Section } from "@/components/page-header";
 import { SECTION_ICONS } from "@/components/shell/navigation";
-import { AccountStatusBadge, OwnerStatusBadge, SubscriptionStatusBadge } from "@/components/status-badges";
+import {
+  AccountStatusBadge,
+  OwnerStatusBadge,
+  PlanTierBadge,
+  SubscriptionStatusBadge,
+} from "@/components/status-badges";
 import { apiFetch, apiFetchOrNotFound } from "@/lib/api/client";
 import { ApiError } from "@/lib/api/errors";
 import type { PurgeItem, PurgePreview, UserDetail } from "@/lib/api/types";
@@ -135,7 +140,12 @@ export default async function CompteDetailPage({ params }: PageProps<"/comptes/[
                 user.owner.subscription ? (
                   <span className="flex flex-wrap items-center gap-2">
                     <SubscriptionStatusBadge status={user.owner.subscription.status} />
-                    {user.owner.subscription.is_trial && <Badge>Essai</Badge>}
+                    {user.owner.subscription.is_trial && (
+                      <>
+                        <Badge>Essai</Badge>
+                        <PlanTierBadge tier={user.owner.subscription.plan_tier} />
+                      </>
+                    )}
                     <span>
                       {formatPrice(user.owner.subscription.amount)} · jusqu&apos;au{" "}
                       {formatDate(user.owner.subscription.end_date)}
