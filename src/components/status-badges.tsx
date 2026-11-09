@@ -131,15 +131,23 @@ export function FeedbackStatusBadge({ status }: { status: FeedbackStatus }) {
  * Un compte supprimé est hors circuit en attendant sa restauration ou son
  * effacement : il prime sur « Désactivé », qu'il implique.
  */
+/**
+ * Une suppression demandée par l'utilisateur est planifiée (bleu) : la purge
+ * suivra d'elle-même. Supprimé par l'équipe, le compte est hors circuit en
+ * attendant qu'elle décide de le purger.
+ */
 export function AccountStatusBadge({
   active,
   verified,
   deleted = false,
+  purgeScheduled = false,
 }: {
   active: boolean;
   verified: boolean;
   deleted?: boolean;
+  purgeScheduled?: boolean;
 }) {
+  if (deleted && purgeScheduled) return <Badge tone={T.upcoming}>Suppression demandée</Badge>;
   if (deleted) return <Badge tone={T.idle}>Supprimé</Badge>;
   if (!active) return <Badge tone={T.stopped}>Désactivé</Badge>;
   if (!verified) return <Badge tone={T.waiting}>Non vérifié</Badge>;

@@ -94,6 +94,12 @@ export interface User {
   last_login_at: string | null;
   /** Renseignée tant que le compte est supprimé, donc restaurable. */
   deleted_at: string | null;
+  /** Supprimé par son titulaire depuis l'application, et non par l'équipe. */
+  deletion_requested_by_user: boolean;
+  /** Échéance de la suppression définitive automatique ; `null` sinon. */
+  purge_scheduled_at: string | null;
+  /** Motif laissé par l'utilisateur, facultatif. */
+  deletion_reason: string | null;
   created_at: string;
   updated_at: string;
 }

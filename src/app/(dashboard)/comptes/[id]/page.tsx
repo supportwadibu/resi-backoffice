@@ -1,4 +1,4 @@
-import { IdCard, Trash2, TriangleAlert, UserCheck, UserRound } from "lucide-react";
+import { IdCard, Trash2, TriangleAlert, UserCheck, UserRound, UserX } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -47,7 +47,9 @@ export default async function CompteDetailPage({ params }: PageProps<"/comptes/[
         description={
           <span className="flex flex-wrap items-center gap-2">
             {ROLE_LABELS[user.role]}
-            <AccountStatusBadge active={user.is_active} verified={user.is_verified} deleted={user.deleted_at !== null} />
+            <AccountStatusBadge active={user.is_active} verified={user.is_verified} deleted={user.deleted_at !== null}
+              purgeScheduled={user.purge_scheduled_at !== null}
+            />
             {user.owner_status && <OwnerStatusBadge status={user.owner_status} />}
           </span>
         }
@@ -77,6 +79,27 @@ export default async function CompteDetailPage({ params }: PageProps<"/comptes/[
           ]}
         />
       </Section>
+
+      {user.deletion_requested_by_user && (
+        <Section title="Suppression demandée par l'utilisateur" icon={UserX}>
+          <div className="flex flex-col gap-4 text-sm">
+            <DetailList
+              items={[
+                ["Demandée le", user.deleted_at ? formatDateTime(user.deleted_at) : null],
+                [
+                  "Suppression définitive",
+                  user.purge_scheduled_at ? formatDate(user.purge_scheduled_at) : null,
+                ],
+                ["Motif", user.deletion_reason ?? "Non précisé"],
+              ]}
+            />
+            <p className="text-muted">
+              Le compte sera effacé automatiquement à cette date. Le restaurer avant annule la
+              suppression, par exemple si l&apos;utilisateur la regrette auprès du support.
+            </p>
+          </div>
+        </Section>
+      )}
 
       {preview && "error" in preview && (
         <Section title="Suppression définitive" icon={Trash2}>

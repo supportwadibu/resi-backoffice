@@ -128,7 +128,9 @@ export default async function ComptesPage({ searchParams }: PageProps<"/comptes"
                 </div>
               </Cell>
               <Cell>
-                <AccountStatusBadge active={user.is_active} verified={user.is_verified} deleted={user.deleted_at !== null} />
+                <AccountStatusBadge active={user.is_active} verified={user.is_verified} deleted={user.deleted_at !== null}
+              purgeScheduled={user.purge_scheduled_at !== null}
+            />
               </Cell>
               <Cell className="whitespace-nowrap">{formatOptionalDate(user.last_login_at)}</Cell>
               <Cell className="whitespace-nowrap">{formatDate(user.created_at)}</Cell>
