@@ -33,7 +33,7 @@ export function StayTypeBreakdown({ data, title }: { data: Breakdown; title?: st
       </p>
 
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[32rem] text-sm">
+        <table className="w-full min-w-lg text-sm">
           <thead>
             <tr className="border-b border-border text-left text-muted">
               <th className="py-2 pr-4 font-normal">Séjour</th>
