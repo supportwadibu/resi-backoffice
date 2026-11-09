@@ -60,7 +60,7 @@ export function OwnerActions({ owner }: { owner: Owner }) {
         title="Valider ce propriétaire ?"
         description={
           owner.profile_submitted
-            ? `${owner.full_name} pourra publier ses logements. Un essai gratuit s'ouvre s'il n'en a pas déjà un.`
+            ? `${owner.full_name} pourra publier ses logements. Son essai gratuit, il le choisit lui-même dans l'application.`
             : `${owner.full_name} n'a pas encore déposé son dossier. Le valider quand même lui ouvre la publication de ses logements.`
         }
         confirmLabel="Valider"

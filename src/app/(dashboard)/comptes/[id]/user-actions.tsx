@@ -87,7 +87,11 @@ export function UserActions({
           onClose={() => setConfirming(null)}
           onConfirm={restore}
           title="Restaurer ce compte ?"
-          description={`${user.full_name} retrouve l'état qu'il avait avant la suppression : un compte désactivé par l'équipe le reste.`}
+          description={
+            user.deletion_requested_by_user
+              ? `La suppression demandée par ${user.full_name} est annulée : le compte redevient utilisable et ne sera pas effacé.`
+              : `${user.full_name} retrouve l'état qu'il avait avant la suppression : un compte désactivé par l'équipe le reste.`
+          }
           confirmLabel="Restaurer"
         />
         <ConfirmDialog

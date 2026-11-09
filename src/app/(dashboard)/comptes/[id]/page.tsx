@@ -1,4 +1,4 @@
-import { IdCard, Trash2, TriangleAlert, UserCheck, UserRound } from "lucide-react";
+import { IdCard, Trash2, TriangleAlert, UserCheck, UserRound, UserX } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -6,7 +6,12 @@ import { Badge } from "@/components/badge";
 import { ButtonLink } from "@/components/button";
 import { DetailList, PageHeader, Section } from "@/components/page-header";
 import { SECTION_ICONS } from "@/components/shell/navigation";
-import { AccountStatusBadge, OwnerStatusBadge, SubscriptionStatusBadge } from "@/components/status-badges";
+import {
+  AccountStatusBadge,
+  OwnerStatusBadge,
+  PlanTierBadge,
+  SubscriptionStatusBadge,
+} from "@/components/status-badges";
 import { apiFetch, apiFetchOrNotFound } from "@/lib/api/client";
 import { ApiError } from "@/lib/api/errors";
 import type { PurgeItem, PurgePreview, UserDetail } from "@/lib/api/types";
@@ -42,7 +47,9 @@ export default async function CompteDetailPage({ params }: PageProps<"/comptes/[
         description={
           <span className="flex flex-wrap items-center gap-2">
             {ROLE_LABELS[user.role]}
-            <AccountStatusBadge active={user.is_active} verified={user.is_verified} deleted={user.deleted_at !== null} />
+            <AccountStatusBadge active={user.is_active} verified={user.is_verified} deleted={user.deleted_at !== null}
+              purgeScheduled={user.purge_scheduled_at !== null}
+            />
             {user.owner_status && <OwnerStatusBadge status={user.owner_status} />}
           </span>
         }
@@ -72,6 +79,27 @@ export default async function CompteDetailPage({ params }: PageProps<"/comptes/[
           ]}
         />
       </Section>
+
+      {user.deletion_requested_by_user && (
+        <Section title="Suppression demandée par l'utilisateur" icon={UserX}>
+          <div className="flex flex-col gap-4 text-sm">
+            <DetailList
+              items={[
+                ["Demandée le", user.deleted_at ? formatDateTime(user.deleted_at) : null],
+                [
+                  "Suppression définitive",
+                  user.purge_scheduled_at ? formatDate(user.purge_scheduled_at) : null,
+                ],
+                ["Motif", user.deletion_reason ?? "Non précisé"],
+              ]}
+            />
+            <p className="text-muted">
+              Le compte sera effacé automatiquement à cette date. Le restaurer avant annule la
+              suppression, par exemple si l&apos;utilisateur la regrette auprès du support.
+            </p>
+          </div>
+        </Section>
+      )}
 
       {preview && "error" in preview && (
         <Section title="Suppression définitive" icon={Trash2}>
@@ -135,7 +163,12 @@ export default async function CompteDetailPage({ params }: PageProps<"/comptes/[
                 user.owner.subscription ? (
                   <span className="flex flex-wrap items-center gap-2">
                     <SubscriptionStatusBadge status={user.owner.subscription.status} />
-                    {user.owner.subscription.is_trial && <Badge>Essai</Badge>}
+                    {user.owner.subscription.is_trial && (
+                      <>
+                        <Badge>Essai</Badge>
+                        <PlanTierBadge tier={user.owner.subscription.plan_tier} />
+                      </>
+                    )}
                     <span>
                       {formatPrice(user.owner.subscription.amount)} · jusqu&apos;au{" "}
                       {formatDate(user.owner.subscription.end_date)}

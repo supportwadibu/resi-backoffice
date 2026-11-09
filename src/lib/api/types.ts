@@ -94,6 +94,12 @@ export interface User {
   last_login_at: string | null;
   /** Renseignée tant que le compte est supprimé, donc restaurable. */
   deleted_at: string | null;
+  /** Supprimé par son titulaire depuis l'application, et non par l'équipe. */
+  deletion_requested_by_user: boolean;
+  /** Échéance de la suppression définitive automatique ; `null` sinon. */
+  purge_scheduled_at: string | null;
+  /** Motif laissé par l'utilisateur, facultatif. */
+  deletion_reason: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -797,8 +803,11 @@ export type StayBucket =
   | "thirty_days_plus";
 
 export interface StayTypeBreakdown {
-  months: number;
+  /** Mois glissants ; `null` pour une période choisie par dates. */
+  months: number | null;
   from: string;
+  /** Dernier jour compté, inclus ; `null` pour les mois glissants. */
+  to: string | null;
   owner_id: string | null;
   total_bookings: number;
   buckets: {
