@@ -431,6 +431,61 @@ export interface PlatformBooking {
     phone: string | null;
     email: string | null;
   } | null;
+  /**
+   * Part de RESI, figée à la création d'une réservation en ligne. `null` au
+   * comptoir, sur l'historique et commission coupée. Absente d'une API
+   * antérieure. `total_amount` reste la part du propriétaire.
+   */
+  commission?: BookingCommission | null;
+}
+
+export type CommissionMode = "percent" | "fixed";
+
+export interface BookingCommission {
+  mode: CommissionMode;
+  value: number;
+  /** Majoration avant code promo. */
+  amount: number;
+  client_daily_price: number;
+  client_subtotal_amount: number;
+  /** Ce que paie le client, code promo déduit. */
+  client_total_amount: number;
+  /** Ce que RESI garde ; négatif quand le code promo dépasse la majoration. */
+  net_amount: number;
+  /** Code promo, pris sur la part de RESI ; la réservation, elle, porte 0. */
+  discount_amount: number;
+  promo_code: string | null;
+}
+
+export interface CommissionSettings {
+  enabled: boolean;
+  /** `percent` : % du prix par nuit. `fixed` : francs ajoutés par nuit. */
+  mode: CommissionMode;
+  value: number;
+  /** `null` tant que rien n'a été réglé : commission coupée. */
+  updated_at: string | null;
+}
+
+export type RevenueGranularity = "day" | "week" | "month";
+
+export interface RevenueTotals {
+  commissions: number;
+  subscriptions: number;
+  withdrawal_fees: number;
+  /** Négatif : les gains de parrainage sont payés par RESI. */
+  sponsorship_rewards: number;
+  net: number;
+}
+
+export interface PlatformRevenue {
+  from: string;
+  /** Exclu. */
+  to: string;
+  granularity: RevenueGranularity;
+  totals: RevenueTotals;
+  commissioned_bookings: number;
+  /** `period` : `AAAA-MM-JJ` du premier jour de la période. */
+  series: (RevenueTotals & { period: string })[];
 }
 
 // ── Abonnements et codes promo ─────────────────────────────────────────────

@@ -1,4 +1,5 @@
 import type {
+  CommissionMode,
   AuditMethod,
   AuditOutcome,
   BookingSource,
@@ -212,4 +213,9 @@ export const AUDIT_METHOD_LABELS: Record<AuditMethod, string> = {
   PUT: "Remplacement",
   PATCH: "Modification",
   DELETE: "Suppression",
+};
+
+export const COMMISSION_MODE_LABELS: Record<CommissionMode, string> = {
+  percent: "Pourcentage du prix par nuit",
+  fixed: "Montant fixe par nuit",
 };

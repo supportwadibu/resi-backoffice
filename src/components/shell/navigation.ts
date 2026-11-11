@@ -1,6 +1,7 @@
 import {
   BedDouble,
   BookUser,
+  Coins,
   Building2,
   CalendarCheck,
   CreditCard,
@@ -31,6 +32,7 @@ export const SIDEBAR_COOKIE = "resi_sidebar";
  */
 export const SECTION_ICONS = {
   dashboard: LayoutDashboard,
+  revenue: Coins,
   owners: UserCheck,
   users: Users,
   clients: BookUser,
@@ -57,7 +59,10 @@ export interface NavItem {
 export const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
   {
     label: "Pilotage",
-    items: [{ href: "/", label: "Tableau de bord", icon: SECTION_ICONS.dashboard }],
+    items: [
+      { href: "/", label: "Tableau de bord", icon: SECTION_ICONS.dashboard },
+      { href: "/revenus", label: "Revenus RESI", icon: SECTION_ICONS.revenue },
+    ],
   },
   {
     label: "Utilisateurs",
