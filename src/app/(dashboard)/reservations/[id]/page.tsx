@@ -18,6 +18,11 @@ export default async function ReservationDetailPage({ params }: PageProps<"/rese
     `/admin/bookings/${encodeURIComponent(id)}`,
   );
 
+  // Avec commission, l'API retire le code promo de la part du propriétaire et
+  // le range dans celle de RESI.
+  const discount = booking.commission?.discount_amount ?? booking.discount_amount;
+  const promoCode = booking.commission ? booking.commission.promo_code : booking.promo_code;
+
   // Le départ anticipé fige ce qui avait été vendu avant de réduire le séjour.
   const shortened = booking.planned_check_out_at !== undefined;
 
@@ -111,13 +116,35 @@ export default async function ReservationDetailPage({ params }: PageProps<"/rese
               ["Sous-total", formatPrice(booking.subtotal_amount)],
               [
                 "Remises",
-                booking.discount_amount > 0
-                  ? `−${formatPrice(booking.discount_amount)}${booking.promo_code ? ` (code ${booking.promo_code})` : ""}${
+                discount > 0
+                  ? `−${formatPrice(discount)}${promoCode ? ` (code ${promoCode}${booking.commission ? ", pris sur la part de RESI" : ""})` : ""}${
                       booking.duration_discount_percent > 0 ? ` · −${booking.duration_discount_percent} % de durée` : ""
                     }`
                   : "Aucune",
               ],
-              ["Total", <strong key="total">{formatPrice(booking.total_amount)}</strong>],
+              // Avec commission, `total_amount` est la part du propriétaire : le
+              // code promo est pris sur celle de RESI.
+              [
+                booking.commission ? "Part du propriétaire" : "Total",
+                <strong key="total">{formatPrice(booking.total_amount)}</strong>,
+              ],
+              [
+                "Payé par le client",
+                booking.commission
+                  ? `${formatPrice(booking.commission.client_total_amount)} (${formatPrice(booking.commission.client_daily_price)} par nuit)`
+                  : null,
+              ],
+              [
+                "Commission RESI",
+                booking.commission ? (
+                  <span key="commission" className={booking.commission.net_amount < 0 ? "text-danger" : ""}>
+                    {formatPrice(booking.commission.net_amount)}
+                    {booking.commission.net_amount !== booking.commission.amount
+                      ? ` (majoration ${formatPrice(booking.commission.amount)}, code promo déduit)`
+                      : ""}
+                  </span>
+                ) : null,
+              ],
               // Financé par RESI : le propriétaire est crédité du total.
               [
                 "Crédit parrainage",

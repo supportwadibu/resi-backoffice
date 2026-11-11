@@ -36,10 +36,16 @@ export const metadata: Metadata = { title: "Parrainages" };
 
 const STATUSES = Object.keys(SPONSORSHIP_STATUS_LABELS) as SponsorshipStatus[];
 
-function describeReward(rule: RewardRule): string {
-  if (rule.mode === "fixed") return `${formatPrice(rule.value)} par filleul`;
+/** Base d'un gain en pourcentage : la commission de RESI pour un client, l'abonnement pour un propriétaire. */
+const REWARD_BASE: Record<SponsorshipRole, string> = {
+  client: "de la commission RESI de chaque séjour",
+  proprio: "de chaque abonnement payé",
+};
+
+function describeReward(rule: RewardRule, role: SponsorshipRole): string {
+  if (rule.mode === "fixed") return `${formatPrice(rule.value)} par action payée`;
   const cap = rule.max_amount !== null ? `, plafonné à ${formatPrice(rule.max_amount)}` : "";
-  return `${rule.value} % du montant payé${cap}`;
+  return `${rule.value} % ${REWARD_BASE[role]}${cap}`;
 }
 
 function describeHold(days: number): string {
@@ -82,7 +88,7 @@ export default async function ParrainagesPage({ searchParams }: PageProps<"/parr
     <div>
       <PageHeader
         title="Parrainages"
-        description="Filleuls inscrits avec un code, et le gain que leur première action payée rapporte au parrain."
+        description="Filleuls inscrits avec un code, et les gains que chacune de leurs actions payées rapporte au parrain."
         actions={
           <>
             <ButtonLink href="/parrainages/retraits">
@@ -107,11 +113,11 @@ export default async function ParrainagesPage({ searchParams }: PageProps<"/parr
             ],
             [
               "Filleul client",
-              `${describeReward(settings.rewards.client)} — ${describeHold(settings.rewards.client.hold_days)}`,
+              `${describeReward(settings.rewards.client, "client")} — ${describeHold(settings.rewards.client.hold_days)}`,
             ],
             [
               "Filleul propriétaire",
-              `${describeReward(settings.rewards.proprio)} — ${describeHold(settings.rewards.proprio.hold_days)}`,
+              `${describeReward(settings.rewards.proprio, "proprio")} — ${describeHold(settings.rewards.proprio.hold_days)}`,
             ],
             ...(["client", "proprio"] as const).map(
               (role): [string, string] => [

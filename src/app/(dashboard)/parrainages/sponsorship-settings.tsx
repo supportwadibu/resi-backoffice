@@ -28,12 +28,12 @@ const OPTIONS_BY_ROLE: Record<SponsorshipRole, RedemptionType[]> = {
 const ROLES: { role: SponsorshipRole; sponsored: string; sponsor: string }[] = [
   {
     role: "client",
-    sponsored: "Filleul client — séjour réservé en ligne, payé et terminé",
+    sponsored: "Filleul client — chaque séjour en ligne payé et terminé, sur la commission de RESI",
     sponsor: "Parrain client",
   },
   {
     role: "proprio",
-    sponsored: "Filleul propriétaire — abonnement payé",
+    sponsored: "Filleul propriétaire — chaque abonnement payé",
     sponsor: "Parrain propriétaire",
   },
 ];
