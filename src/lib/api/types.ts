@@ -410,6 +410,14 @@ export interface PlatformBooking {
   /** Prix négocié par unité du type de séjour ; `null` au tarif ou sur l'historique. */
   agreed_unit_price?: number | null;
   deposit_amount?: number;
+  /** Absents d'une API antérieure à l'acompte : paiement total. */
+  payment_option?: "full" | "deposit";
+  /** Part du propriétaire reçue en ligne. */
+  prepaid_amount?: number;
+  /** Reste à encaisser au comptoir avant la remise des clés. */
+  balance_due?: number;
+  /** Close sans que le client se soit présenté. */
+  no_show?: boolean;
   /** Apporteur d'affaire, saisi librement à la création. */
   referrer: { name: string; phone: string | null } | null;
   /** Taux figé à la création, entre 0 et 1 ; 0 sans apporteur. */
@@ -959,4 +967,19 @@ export interface PlatformClient {
 export interface PlatformClientList extends Paginated<PlatformClient> {
   counts: { carnet: number; account: number };
   truncated: boolean;
+}
+
+export type DepositType = "percent" | "fixed";
+
+/** Acompte des réservations en ligne : voir `api/docs/specs/acompte-arrivee-design.md`. */
+export interface DepositSettings {
+  /** Coupé : seul le paiement total est proposé au client. */
+  enabled: boolean;
+  /** Le propriétaire règle l'acompte de ses logements ; sinon la règle de RESI s'impose. */
+  owner_can_set: boolean;
+  /** `percent` : % de ce que paie le client. `fixed` : francs. */
+  type: DepositType;
+  value: number;
+  /** `null` tant que rien n'a été réglé : acompte coupé. */
+  updated_at: string | null;
 }

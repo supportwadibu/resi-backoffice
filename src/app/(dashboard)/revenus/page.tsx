@@ -1,4 +1,4 @@
-import { ArrowDownUp, Coins, Percent, Receipt } from "lucide-react";
+import { ArrowDownUp, Coins, Percent, Receipt, Wallet } from "lucide-react";
 import type { Metadata } from "next";
 
 import { Badge } from "@/components/badge";
@@ -10,12 +10,18 @@ import { StatTile } from "@/components/stat-tile";
 import { STATUS_TONES } from "@/components/status-badges";
 import { Cell, Row, Table } from "@/components/table";
 import { apiFetch } from "@/lib/api/client";
-import type { CommissionSettings, PlatformRevenue, RevenueGranularity } from "@/lib/api/types";
+import type {
+  CommissionSettings,
+  DepositSettings,
+  PlatformRevenue,
+  RevenueGranularity,
+} from "@/lib/api/types";
 import { formatDate, formatNumber, formatPrice } from "@/lib/format";
 import { COMMISSION_MODE_LABELS } from "@/lib/labels";
 import { enumParam, param } from "@/lib/search-params";
 
 import { CommissionSettingsButton } from "./commission-settings";
+import { DepositSettingsButton } from "./deposit-settings";
 import { REVENUE_PERIODS, revenueWindow, type RevenuePeriod } from "./period";
 
 export const metadata: Metadata = { title: "Revenus RESI" };
@@ -37,6 +43,12 @@ function describeCommission(settings: CommissionSettings): string {
   return `${value} — ${COMMISSION_MODE_LABELS[settings.mode].toLowerCase()}`;
 }
 
+function describeDeposit(settings: DepositSettings): string {
+  const value =
+    settings.type === "percent" ? `${settings.value} % du séjour` : formatPrice(settings.value);
+  return settings.owner_can_set ? `${value}, par défaut` : value;
+}
+
 /** Montant signé : ce qui sort des caisses de RESI s'affiche en rouge. */
 function Amount({ value }: { value: number }) {
   return <span className={value < 0 ? "text-danger" : ""}>{formatPrice(value)}</span>;
@@ -53,9 +65,10 @@ export default async function RevenusPage({ searchParams }: PageProps<"/revenus"
       : currentYear;
   const window = revenueWindow(period, year);
 
-  const [{ data: revenue }, { data: settings }] = await Promise.all([
+  const [{ data: revenue }, { data: settings }, { data: deposit }] = await Promise.all([
     apiFetch<{ data: PlatformRevenue }>("/admin/stats/platform-revenue", { query: { ...window } }),
     apiFetch<{ data: CommissionSettings }>("/admin/settings/commissions"),
+    apiFetch<{ data: DepositSettings }>("/admin/settings/deposits"),
   ]);
   const { totals } = revenue;
   const filters = { periode: period, annee: year };
@@ -66,7 +79,12 @@ export default async function RevenusPage({ searchParams }: PageProps<"/revenus"
       <PageHeader
         title="Revenus RESI"
         description="Ce que RESI garde : commissions sur les réservations en ligne, abonnements et frais de retrait, moins les gains de parrainage versés."
-        actions={<CommissionSettingsButton settings={settings} />}
+        actions={
+          <>
+            <DepositSettingsButton settings={deposit} />
+            <CommissionSettingsButton settings={settings} />
+          </>
+        }
       />
 
       <Section title="Commission" icon={Percent} className="mb-6">
@@ -82,6 +100,32 @@ export default async function RevenusPage({ searchParams }: PageProps<"/revenus"
             ],
             ["Règle", describeCommission(settings)],
             ["Code promo", "Pris sur la part de RESI : le propriétaire touche toujours son prix."],
+          ]}
+        />
+      </Section>
+
+      <Section title="Acompte" icon={Wallet} className="mb-6">
+        <DetailList
+          items={[
+            [
+              "État",
+              deposit.enabled ? (
+                <Badge tone={STATUS_TONES.done}>Proposé</Badge>
+              ) : (
+                <Badge tone={STATUS_TONES.idle}>Coupé</Badge>
+              ),
+            ],
+            ["Règle", describeDeposit(deposit)],
+            [
+              "Réglé par",
+              deposit.owner_can_set
+                ? "Chaque propriétaire, logement par logement"
+                : "RESI, pour tous",
+            ],
+            [
+              "Commission",
+              "Retenue en entier sur l'acompte : il n'est jamais inférieur à la part de RESI.",
+            ],
           ]}
         />
       </Section>
