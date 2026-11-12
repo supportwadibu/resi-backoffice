@@ -3,6 +3,7 @@ import {
   ChartColumn,
   FileClock,
   Hourglass,
+  MapPinOff,
   MessageSquareWarning,
   Percent,
   Repeat,
@@ -28,7 +29,9 @@ import {
 } from "@/components/status-badges";
 import { StayTypeBreakdown } from "@/components/stay-type-breakdown";
 import { apiFetch } from "@/lib/api/client";
+import { ApiError } from "@/lib/api/errors";
 import type {
+  PlatformMap as PlatformMapData,
   PlatformStats,
   RevenueSeries,
   StayTypeBreakdown as StayTypeBreakdownData,
@@ -46,6 +49,7 @@ import {
 } from "@/lib/labels";
 import { dayParam, type SearchParams } from "@/lib/search-params";
 
+import { PlatformMap } from "./platform-map";
 import { RevenueChart } from "./revenue-chart";
 import { SubscriptionRevenueChart, type RevenueMonth } from "./subscription-revenue-chart";
 
@@ -77,13 +81,19 @@ function stayPeriod(params: SearchParams) {
 
 export default async function DashboardPage({ searchParams }: PageProps<"/">) {
   const period = stayPeriod(await searchParams);
-  const [{ data: stats }, { data: series }, { data: resi }, { data: stays }] = await Promise.all([
+  const [{ data: stats }, { data: series }, { data: resi }, { data: stays }, map] = await Promise.all([
     apiFetch<{ data: PlatformStats }>("/admin/stats"),
     apiFetch<{ data: RevenueSeries }>("/admin/stats/revenue", { query: { months: 12 } }),
     apiFetch<{ data: SubscriptionRevenue }>("/admin/stats/subscriptions", {
       query: { months_back: 12, months_ahead: 6 },
     }),
     apiFetch<{ data: StayTypeBreakdownData }>("/admin/stats/stay-types", { query: period.query }),
+    // Une carte qui échoue ne doit pas emporter le tableau de bord : seules
+    // les erreurs de l'API sont rattrapées, la redirection d'un 401 passe.
+    apiFetch<PlatformMapData>("/admin/residences/map").catch((error: unknown) => {
+      if (error instanceof ApiError) return null;
+      throw error;
+    }),
   ]);
 
   const growth = stats.revenue.growth_percent;
@@ -224,6 +234,24 @@ export default async function DashboardPage({ searchParams }: PageProps<"/">) {
             href="/comptes"
           />
         </div>
+      </DashboardGroup>
+
+      <DashboardGroup title="Carte des résidences" className="mt-8">
+        {map ? (
+          <PlatformMap
+            points={map.data}
+            withoutCoordinates={map.without_coordinates}
+            truncated={map.truncated}
+            // Lues ici, au rendu, plutôt qu'en `NEXT_PUBLIC_` figé au build :
+            // changer de clé ne demande qu'un redémarrage.
+            apiKey={process.env.GOOGLE_MAPS_API_KEY ?? ""}
+            mapId={process.env.GOOGLE_MAPS_MAP_ID || "DEMO_MAP_ID"}
+          />
+        ) : (
+          <Section title="Carte indisponible" icon={MapPinOff}>
+            <p className="text-sm text-muted">Les lieux de la plateforme n&apos;ont pas pu être chargés. Réessayez plus tard.</p>
+          </Section>
+        )}
       </DashboardGroup>
 
       <div className="mt-8 grid grid-cols-1 gap-x-3 gap-y-8 xl:grid-cols-3">

@@ -904,3 +904,59 @@ export interface AccountImportReport {
     rejected: number;
   }[];
 }
+
+/**
+ * Lieu de la carte du tableau de bord (`GET /admin/residences/map`) : une
+ * résidence, ou un logement autonome. Les unités d'une résidence n'ont pas
+ * de point à elles.
+ */
+export interface MapPoint {
+  id: string;
+  kind: "residence" | "property";
+  name: string;
+  street: string;
+  city: string;
+  latitude: number;
+  longitude: number;
+  owner: UserSummary | null;
+  units_count: number;
+  published_count: number;
+  min_daily_price: number | null;
+  image: string | null;
+  /** Logement autonome seulement. */
+  property_type: PropertyType | null;
+  status: PropertyStatus | null;
+}
+
+export interface PlatformMap {
+  data: MapPoint[];
+  /** Lieux écartés faute de coordonnées. */
+  without_coordinates: number;
+  /** Borne de lecture atteinte : la carte est incomplète. */
+  truncated: boolean;
+}
+
+/**
+ * Client de la plateforme (`GET /admin/clients`) : une fiche du carnet d'un
+ * propriétaire, ou un compte de l'application client. Ses logements et, pour
+ * un compte, ses propriétaires se déduisent de ses réservations.
+ */
+export interface PlatformClient {
+  id: string;
+  kind: "carnet" | "account";
+  full_name: string;
+  phone: string | null;
+  email: string | null;
+  owners: UserSummary[];
+  properties: { property: PropertySummary; owner_id: string; stays: number; last_stay_at: string }[];
+  /** Réservations hors annulations. */
+  stays: number;
+  total_paid: number;
+  last_stay_at: string | null;
+  created_at: string | null;
+}
+
+export interface PlatformClientList extends Paginated<PlatformClient> {
+  counts: { carnet: number; account: number };
+  truncated: boolean;
+}

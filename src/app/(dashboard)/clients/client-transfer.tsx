@@ -1,12 +1,11 @@
 "use client";
 
-import { CircleAlert, CircleCheck, Download, FileText, Upload } from "lucide-react";
+import { CircleAlert, CircleCheck, Download, FileText, Info, Upload } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/button";
+import { Dialog } from "@/components/dialog";
 import { FormDialog } from "@/components/form-dialog";
-import { PageHeader, Section } from "@/components/page-header";
-import { SECTION_ICONS } from "@/components/shell/navigation";
 import { StatTile } from "@/components/stat-tile";
 import { Cell, PersonCell, Row, Table } from "@/components/table";
 import { notify } from "@/components/toast";
@@ -16,17 +15,21 @@ import { errorMessage, FILE_INPUT_CLASS, redirectedToLogin, saveResponse } from 
 
 /**
  * Export et réimport du carnet clients de toute la plateforme, pour vider la
- * base sans perdre les fiches.
+ * base sans perdre les fiches. Actions de l'en-tête de la liste : leur mode
+ * d'emploi et le rapport d'import s'ouvrent en dialogue, la page reste à la
+ * liste des clients.
  *
  * Les fichiers transitent par les route handlers `export` et `import` : le
  * navigateur ne parle jamais à l'API. Un `fetch` plutôt qu'un lien ou une
  * soumission de formulaire, pour qu'une erreur s'affiche au lieu de
  * remplacer la page.
  */
-export function ClientTransfer() {
+export function ClientTransferActions() {
   const [importing, setImporting] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [explaining, setExplaining] = useState(false);
   const [report, setReport] = useState<ClientImportReport | null>(null);
+  const [showReport, setShowReport] = useState(false);
 
   async function exportClients() {
     setExporting(true);
@@ -60,6 +63,8 @@ export function ClientTransfer() {
 
     const { data } = (await response.json()) as { data: ClientImportReport };
     setReport(data);
+    // Des fiches écartées : le détail s'ouvre de lui-même, il dit quoi corriger.
+    if (data.skipped.length > 0) setShowReport(true);
 
     const skipped = data.skipped.length;
     return {
@@ -67,51 +72,67 @@ export function ClientTransfer() {
       data: undefined,
       message:
         `${data.created} fiche${data.created > 1 ? "s" : ""} importée${data.created > 1 ? "s" : ""}` +
-        (skipped > 0 ? `, ${skipped} ignorée${skipped > 1 ? "s" : ""} — détail sur la page.` : "."),
+        (skipped > 0 ? `, ${skipped} ignorée${skipped > 1 ? "s" : ""}.` : "."),
     };
   }
 
   return (
-    <div className="space-y-6">
-      <PageHeader
-        title="Clients"
-        description="Carnets clients de tous les propriétaires, à sauvegarder avant une remise à zéro de la base."
-        actions={
-          <>
-            <Button variant="secondary" onClick={exportClients} disabled={exporting}>
-              <Download aria-hidden className="size-4" />
-              {exporting ? "Export…" : "Exporter"}
-            </Button>
-            <Button onClick={() => setImporting(true)}>
-              <Upload aria-hidden className="size-4" />
-              Importer
-            </Button>
-          </>
-        }
-      />
+    <>
+      <Button variant="ghost" onClick={() => setExplaining(true)}>
+        <Info aria-hidden className="size-4" />
+        Fonctionnement
+      </Button>
+      {report && (
+        <Button variant="ghost" onClick={() => setShowReport(true)}>
+          <FileText aria-hidden className="size-4" />
+          Dernier import
+        </Button>
+      )}
+      <Button variant="secondary" onClick={exportClients} disabled={exporting}>
+        <Download aria-hidden className="size-4" />
+        {exporting ? "Export…" : "Exporter"}
+      </Button>
+      <Button onClick={() => setImporting(true)}>
+        <Upload aria-hidden className="size-4" />
+        Importer
+      </Button>
 
-      <Section title="Fonctionnement" icon={FileText}>
+      <Dialog
+        open={explaining}
+        onClose={() => setExplaining(false)}
+        title="Export et import des carnets"
+        description="Sauvegarder les carnets clients avant une remise à zéro de la base, puis les restaurer."
+        className="max-w-xl"
+      >
         <ul className="list-disc space-y-2 pl-5 text-sm">
           <li>
-            L&apos;export produit un fichier JSON avec chaque fiche et l&apos;identité de son
-            propriétaire (e-mail, téléphone). Il contient des numéros de pièce : gardez-le en lieu sûr.
+            L&apos;export produit un fichier JSON avec chaque fiche et l&apos;identité de son propriétaire (e-mail,
+            téléphone). Il contient des numéros de pièce : gardez-le en lieu sûr.
           </li>
           <li>
-            À l&apos;import, chaque fiche rejoint le compte propriétaire qui porte le même identifiant,
-            le même e-mail ou le même téléphone. Recréez les propriétaires avant d&apos;importer.
+            À l&apos;import, chaque fiche rejoint le compte propriétaire qui porte le même identifiant, le même
+            e-mail ou le même téléphone. Recréez les propriétaires avant d&apos;importer.
           </li>
           <li>
-            Les statistiques de séjour repartent de zéro : elles se recalculent sur les nouvelles
-            réservations. Les photos des pièces, conservées chez Cloudinary, sont retrouvées.
+            Les statistiques de séjour repartent de zéro : elles se recalculent sur les nouvelles réservations. Les
+            photos des pièces, conservées chez Cloudinary, sont retrouvées.
           </li>
           <li>
-            L&apos;import peut être relancé sans créer de doublon : une fiche déjà présente, ou un
-            numéro déjà connu du carnet, est ignoré.
+            L&apos;import peut être relancé sans créer de doublon : une fiche déjà présente, ou un numéro déjà
+            connu du carnet, est ignoré.
+          </li>
+          <li>
+            Seules les fiches des carnets partent dans le fichier. Les comptes de l&apos;application client se
+            transfèrent un par un, depuis leur fiche dans « Comptes ».
           </li>
         </ul>
-      </Section>
+      </Dialog>
 
-      {report && <ImportReport report={report} />}
+      {report && (
+        <Dialog open={showReport} onClose={() => setShowReport(false)} title="Dernier import" className="max-w-2xl">
+          <ImportReport report={report} />
+        </Dialog>
+      )}
 
       <FormDialog
         open={importing}
@@ -134,14 +155,14 @@ export function ClientTransfer() {
           />
         </label>
       </FormDialog>
-    </div>
+    </>
   );
 }
 
 function ImportReport({ report }: { report: ClientImportReport }) {
   return (
-    <Section title="Dernier import" icon={SECTION_ICONS.clients}>
-      <div className="grid gap-4 sm:grid-cols-3">
+    <div className="space-y-4">
+      <div className="grid gap-3 sm:grid-cols-3">
         <StatTile label="Fiches lues" value={String(report.total)} icon={FileText} />
         <StatTile label="Importées" value={String(report.created)} icon={CircleCheck} accent="green" />
         <StatTile
@@ -153,20 +174,18 @@ function ImportReport({ report }: { report: ClientImportReport }) {
       </div>
 
       {report.skipped.length > 0 && (
-        <div className="mt-4">
-          <Table head={["Ligne", "Client", "Motif"]}>
-            {report.skipped.map((entry) => (
-              <Row key={`${entry.line}-${entry.id}`}>
-                <Cell className="tabular-nums">{entry.line}</Cell>
-                <Cell>
-                  <PersonCell name={entry.full_name} contact={entry.phone} />
-                </Cell>
-                <Cell className="text-sm">{entry.message}</Cell>
-              </Row>
-            ))}
-          </Table>
-        </div>
+        <Table head={["Ligne", "Client", "Motif"]}>
+          {report.skipped.map((entry) => (
+            <Row key={`${entry.line}-${entry.id}`}>
+              <Cell className="tabular-nums">{entry.line}</Cell>
+              <Cell>
+                <PersonCell name={entry.full_name} contact={entry.phone} />
+              </Cell>
+              <Cell className="text-sm">{entry.message}</Cell>
+            </Row>
+          ))}
+        </Table>
       )}
-    </Section>
+    </div>
   );
 }

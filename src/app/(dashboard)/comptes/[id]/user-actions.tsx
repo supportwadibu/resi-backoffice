@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { deleteUser, purgeUser, restoreUser, updateUser, type UserPatch } from "@/app/actions/users";
-import { Button } from "@/components/button";
+import { Button, ButtonLink } from "@/components/button";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { FormDialog } from "@/components/form-dialog";
 import { Input } from "@/components/input";
@@ -57,16 +57,14 @@ export function UserActions({
   }
 
   // Un administrateur n'agit pas sur son propre compte : l'API le refuse, et
-  // seul, il n'aurait plus personne pour lui rendre l'accès.
+  // seul, il n'aurait plus personne pour lui rendre l'accès. Il le modifie
+  // depuis « Mon compte », où le mot de passe actuel protège ses identifiants.
   if (isSelf) {
     return (
-      <>
-        <Button variant="secondary" onClick={() => setEditing(true)}>
-          <Pencil aria-hidden className="size-4" />
-          Modifier
-        </Button>
-        {editDialog()}
-      </>
+      <ButtonLink href="/compte">
+        <Pencil aria-hidden className="size-4" />
+        Modifier mon compte
+      </ButtonLink>
     );
   }
 
