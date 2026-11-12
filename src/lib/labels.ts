@@ -1,5 +1,6 @@
 import type {
   CommissionMode,
+  DepositType,
   AuditMethod,
   AuditOutcome,
   BookingSource,
@@ -218,4 +219,9 @@ export const AUDIT_METHOD_LABELS: Record<AuditMethod, string> = {
 export const COMMISSION_MODE_LABELS: Record<CommissionMode, string> = {
   percent: "Pourcentage du prix par nuit",
   fixed: "Montant fixe par nuit",
+};
+
+export const DEPOSIT_TYPE_LABELS: Record<DepositType, string> = {
+  percent: "Pourcentage du séjour",
+  fixed: "Montant fixe",
 };
