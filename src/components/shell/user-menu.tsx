@@ -1,12 +1,14 @@
+import Link from "next/link";
+
 import type { SessionUser } from "@/lib/auth/tokens";
 
 import { LogoutButton } from "./logout-button";
 
-/** Identité de l'administrateur connecté et déconnexion. */
+/** Identité de l'administrateur connecté, lien vers son compte, et déconnexion. */
 export function UserMenu({ user }: { user: SessionUser }) {
   return (
     <div className="flex items-center gap-3">
-      <div className="flex min-w-0 items-center gap-3">
+      <Link href="/compte" title="Mon compte" className="flex min-w-0 items-center gap-3 hover:text-foreground">
         <span
           aria-hidden
           className="flex size-9 shrink-0 items-center justify-center border border-border bg-background text-sm font-semibold"
@@ -18,7 +20,7 @@ export function UserMenu({ user }: { user: SessionUser }) {
           {/* Un admin créé par téléphone n'a pas forcément d'e-mail. */}
           <div className="truncate text-xs text-muted">{user.email ?? user.phone ?? "Administrateur"}</div>
         </div>
-      </div>
+      </Link>
 
       <div aria-hidden className="h-6 w-px bg-border" />
 
