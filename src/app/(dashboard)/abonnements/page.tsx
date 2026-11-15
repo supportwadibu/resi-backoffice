@@ -8,9 +8,9 @@ import { ScopeHiddenInputs, ScopeNote } from "@/components/scope-note";
 import { Select } from "@/components/select";
 import { PlanTierBadge, STATUS_TONES, SubscriptionStatusBadge } from "@/components/status-badges";
 import { RowActions } from "@/components/icon-button";
-import { Cell, Row, RowLink, Table } from "@/components/table";
+import { Cell, PersonCell, Row, Table } from "@/components/table";
 import { apiFetch } from "@/lib/api/client";
-import type { Paginated, Plan, Subscription, SubscriptionStatus } from "@/lib/api/types";
+import type { Paginated, Plan, PlatformSubscription, SubscriptionStatus } from "@/lib/api/types";
 import { formatDate, formatPrice } from "@/lib/format";
 import {
   SUBSCRIPTION_CANCEL_REASON_LABELS,
@@ -41,7 +41,7 @@ export default async function AbonnementsPage({ searchParams }: PageProps<"/abon
 
   // Les plans servent à nommer chaque ligne : l'abonnement ne porte que l'identifiant.
   const [{ data: subscriptions, meta }, { data: plans }] = await Promise.all([
-    apiFetch<Paginated<Subscription>>("/admin/subscriptions", {
+    apiFetch<Paginated<PlatformSubscription>>("/admin/subscriptions", {
       query: { ...filters, page: pageParam(params), per_page: 25 },
     }),
     apiFetch<Paginated<Plan>>("/admin/plans", { query: { per_page: 100 } }),
@@ -86,7 +86,11 @@ export default async function AbonnementsPage({ searchParams }: PageProps<"/abon
           {subscriptions.map((subscription) => (
             <Row key={subscription.id}>
               <Cell>
-                <RowLink href={`/proprietaires/${subscription.user_id}`}>Voir le propriétaire</RowLink>
+                <PersonCell
+                  name={subscription.owner?.full_name ?? "Compte supprimé"}
+                  contact={subscription.owner?.email ?? subscription.owner?.phone}
+                  href={`/proprietaires/${subscription.user_id}`}
+                />
                 {subscription.payment_reference && (
                   <div className="text-xs text-muted">Réf. {subscription.payment_reference}</div>
                 )}

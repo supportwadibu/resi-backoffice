@@ -530,6 +530,12 @@ export interface Subscription {
   updated_at: string;
 }
 
+/** Abonnement de la liste admin, avec le propriétaire qui l'a souscrit. */
+export interface PlatformSubscription extends Subscription {
+  /** `null` si le compte a été supprimé depuis. */
+  owner: UserSummary | null;
+}
+
 export type PromoCodeType = "percentage" | "fixed";
 
 export interface PromoCode {
