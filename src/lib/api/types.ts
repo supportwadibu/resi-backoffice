@@ -526,8 +526,21 @@ export interface Subscription {
   retained_credit: number | null;
   /** Résilié sans remboursement : actif jusqu'à `end_date`, puis expiré. */
   cancel_at_period_end: boolean;
+  /** Enregistré par un administrateur, hors application : jamais remboursé à la résiliation. */
+  recorded_by_admin: boolean;
   created_at: string;
   updated_at: string;
+}
+
+/** Moyen d'un paiement reçu hors application, saisi par un administrateur. */
+export type ManualPaymentMethod = "cash" | "mobile_money" | "bank_transfer";
+
+/** Code de validation envoyé à l'e-mail de l'administrateur. */
+export interface SubscriptionGrantCode {
+  email: string;
+  expires_at: string;
+  /** Montant retenu par l'API : celui saisi, le prix du plan à défaut. */
+  amount: number;
 }
 
 /** Abonnement de la liste admin, avec le propriétaire qui l'a souscrit. */

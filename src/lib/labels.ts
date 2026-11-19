@@ -10,6 +10,7 @@ import type {
   FeedbackStatus,
   FeedbackType,
   IdDocumentType,
+  ManualPaymentMethod,
   OwnerStatus,
   PlanTier,
   StayBucket,
@@ -129,6 +130,12 @@ export const WITHDRAWAL_STATUS_LABELS: Record<WithdrawalStatus, string> = {
   pending: "À verser",
   paid: "Versé",
   rejected: "Refusé",
+};
+
+export const MANUAL_PAYMENT_METHOD_LABELS: Record<ManualPaymentMethod, string> = {
+  cash: "Espèces",
+  mobile_money: "Mobile money (hors application)",
+  bank_transfer: "Virement bancaire",
 };
 
 export const PLAN_TIER_LABELS: Record<PlanTier, string> = {
