@@ -1,4 +1,4 @@
-import { ShieldCheck, UserRound } from "lucide-react";
+import { Plus, ShieldCheck, UserRound } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -72,6 +72,10 @@ export default async function ProprietaireDetailPage({ params }: PageProps<"/pro
             <ButtonLink variant="ghost" size="sm" href={`/abonnements?user_id=${owner.id}`}>
               <SECTION_ICONS.subscriptions aria-hidden className="size-4" />
               Abonnements
+            </ButtonLink>
+            <ButtonLink variant="ghost" size="sm" href={`/abonnements/nouveau?owner=${owner.id}`}>
+              <Plus aria-hidden className="size-4" />
+              Enregistrer un abonnement
             </ButtonLink>
             <ButtonLink variant="ghost" size="sm" href={`/reservations?owner_id=${owner.id}`}>
               <SECTION_ICONS.bookings aria-hidden className="size-4" />

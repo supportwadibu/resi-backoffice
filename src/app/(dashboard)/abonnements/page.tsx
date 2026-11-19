@@ -1,6 +1,8 @@
+import { Plus } from "lucide-react";
 import type { Metadata } from "next";
 
 import { Badge } from "@/components/badge";
+import { ButtonLink } from "@/components/button";
 import { FilterBar } from "@/components/filter-bar";
 import { EmptyState, PageHeader } from "@/components/page-header";
 import { Pagination } from "@/components/pagination";
@@ -50,7 +52,19 @@ export default async function AbonnementsPage({ searchParams }: PageProps<"/abon
 
   return (
     <div>
-      <PageHeader title="Abonnements" description="Essais et abonnements payants des propriétaires." />
+      <PageHeader
+        title="Abonnements"
+        description="Essais et abonnements payants des propriétaires."
+        actions={
+          <ButtonLink
+            variant="primary"
+            href={scope.user_id ? `/abonnements/nouveau?owner=${scope.user_id}` : "/abonnements/nouveau"}
+          >
+            <Plus aria-hidden className="size-4" />
+            Enregistrer un abonnement
+          </ButtonLink>
+        }
+      />
 
       <ScopeNote labels={scope.user_id ? ["un propriétaire"] : []} clearHref="/abonnements" />
 
@@ -111,8 +125,12 @@ export default async function AbonnementsPage({ searchParams }: PageProps<"/abon
                       {planNames.get(subscription.plan_id) ?? <span className="text-muted">Plan supprimé</span>}
                     </div>
                     {/* Le palier figé à la souscription, et non celui du plan aujourd'hui. */}
-                    <div className="mt-1">
+                    <div className="mt-1 flex flex-wrap gap-1">
                       <PlanTierBadge tier={subscription.plan_tier} />
+                      {/* Absent des réponses d'une API antérieure : faux. */}
+                      {subscription.recorded_by_admin && (
+                        <Badge tone={STATUS_TONES.idle}>Hors application</Badge>
+                      )}
                     </div>
                   </>
                 ) : (
