@@ -22,3 +22,17 @@ export async function cancelSubscription(id: string, reason?: string) {
     }),
   );
 }
+
+/**
+ * Ouvre un abonnement à un propriétaire sans paiement Wave (paiement reçu
+ * hors application, geste commercial). Refusé par l'API si un abonnement
+ * payant est déjà en cours : le prolonger ou le résilier d'abord.
+ */
+export async function grantSubscription(userId: string, planId: string, reason?: string) {
+  return runAction(() =>
+    apiFetch<{ data: Subscription }>("/admin/subscriptions", {
+      method: "POST",
+      body: reason ? { user_id: userId, plan_id: planId, reason } : { user_id: userId, plan_id: planId },
+    }),
+  );
+}

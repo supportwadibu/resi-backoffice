@@ -1,7 +1,19 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, Expand, X } from "lucide-react";
-import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from "react";
+import {
+  type KeyboardEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+
+import {
+  ChevronLeft,
+  ChevronRight,
+  Expand,
+  X,
+} from 'lucide-react';
 
 /*
  * `<img>` plutôt que `next/image` dans tout le fichier : photos hébergées
@@ -29,7 +41,7 @@ export function PhotoGallery({ images, label = "Photos du logement" }: { images:
   if (count === 0) return null;
 
   return (
-    <section aria-label={label} className="grid gap-2 lg:h-[30rem] lg:grid-cols-[minmax(0,1fr)_8rem]">
+    <section aria-label={label} className="grid gap-2 lg:h-120 lg:grid-cols-[minmax(0,1fr)_8rem]">
       <Carousel
         images={images}
         index={index}
@@ -171,7 +183,7 @@ function Carousel({
         role="region"
         aria-roledescription="carrousel"
         aria-label={`Photo ${index + 1} sur ${count}`}
-        className="flex size-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain outline-none [scrollbar-width:none] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-on-overlay [&::-webkit-scrollbar]:hidden"
+        className="flex size-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain outline-none scrollbar-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-on-overlay [&::-webkit-scrollbar]:hidden"
       >
         {images.map((src, i) => (
           <figure key={`${src}-${i}`} className="relative size-full shrink-0 snap-center snap-always overflow-hidden">
@@ -282,7 +294,7 @@ function Filmstrip({
   const ring = tone === "overlay" ? "outline-on-overlay" : "outline-primary";
 
   return (
-    <div role="group" aria-label="Choisir une photo" className={`[scrollbar-width:thin] ${className}`}>
+    <div role="group" aria-label="Choisir une photo" className={`scrollbar-thin ${className}`}>
       {images.map((src, i) => {
         const active = i === index;
         return (
@@ -293,7 +305,7 @@ function Filmstrip({
             onClick={() => onSelect(i)}
             aria-label={`Photo ${i + 1}`}
             aria-current={active ? "true" : undefined}
-            className={`relative shrink-0 overflow-hidden bg-overlay outline-offset-[-2px] transition ${thumbClassName} ${
+            className={`relative shrink-0 overflow-hidden bg-overlay outline-offset-2 transition ${thumbClassName} ${
               active ? `outline-2 ${ring}` : "opacity-50 hover:opacity-100 focus-visible:opacity-100"
             }`}
           >
