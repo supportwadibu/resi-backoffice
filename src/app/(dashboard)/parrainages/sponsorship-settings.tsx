@@ -116,7 +116,7 @@ export function SponsorshipSettingsButton({ settings }: { settings: SponsorshipS
           {ROLES.map(({ role, sponsored }) => {
             const rule = settings.rewards[role];
             return (
-              <fieldset key={role} className="space-y-3 border border-border p-4">
+              <fieldset key={role} className="space-y-3 rounded-md border border-border p-4">
                 <legend className="px-1 text-sm font-medium">{sponsored}</legend>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <Select
@@ -162,7 +162,7 @@ export function SponsorshipSettingsButton({ settings }: { settings: SponsorshipS
           {ROLES.map(({ role, sponsor }) => {
             const rule = settings.redemption[role];
             return (
-              <fieldset key={role} className="space-y-3 border border-border p-4">
+              <fieldset key={role} className="space-y-3 rounded-md border border-border p-4">
                 <legend className="px-1 text-sm font-medium">{sponsor} — usage des gains</legend>
                 <Input
                   label="Seuil d'une demande (F)"

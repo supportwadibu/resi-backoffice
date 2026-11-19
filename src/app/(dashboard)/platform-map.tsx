@@ -116,7 +116,7 @@ export function PlatformMap({ points, withoutCoordinates, truncated, apiKey, map
   }
 
   return (
-    <div className="grid border border-border bg-surface lg:h-150 lg:grid-cols-[22rem_minmax(0,1fr)]">
+    <div className="grid rounded-md border border-border bg-surface lg:h-150 lg:grid-cols-[22rem_minmax(0,1fr)]">
       <aside className="flex min-h-0 flex-col border-b border-border lg:border-r lg:border-b-0">
         <div className="flex flex-col gap-3 border-b border-border p-4">
           <Input
@@ -126,14 +126,14 @@ export function PlatformMap({ points, withoutCoordinates, truncated, apiKey, map
             value={query}
             onChange={(event) => setQuery(event.target.value)}
           />
-          <div role="group" aria-label="Type de lieu" className="grid grid-cols-3 border border-border">
+          <div role="group" aria-label="Type de lieu" className="grid grid-cols-3 gap-0.5 rounded-full border border-border p-0.5">
             {(["all", "residence", "property"] as const).map((value) => (
               <button
                 key={value}
                 type="button"
                 aria-pressed={kind === value}
                 onClick={() => setKind(value)}
-                className={`flex flex-col items-center px-2 py-1.5 text-xs transition-colors not-first:border-l not-first:border-border ${
+                className={`flex flex-col items-center rounded-full px-2 py-1 text-xs transition-colors ${
                   kind === value ? "bg-primary text-primary-foreground" : "hover:bg-background"
                 }`}
               >
@@ -307,7 +307,7 @@ function Camera({
       <button
         type="button"
         onClick={() => setOverview((n) => n + 1)}
-        className="m-3 flex items-center gap-2 border border-border bg-surface px-3 py-1.5 text-sm font-medium text-foreground shadow-sm hover:bg-background"
+        className="m-3 flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-1.5 text-sm font-medium text-foreground shadow-sm hover:bg-background"
       >
         <Expand aria-hidden className="size-4" />
         Tout afficher
@@ -494,7 +494,7 @@ function PointCard({ point, onClose }: { point: MapPoint; onClose: () => void })
   const href = point.kind === "residence" ? `/residences/${point.id}` : `/logements/${point.id}`;
 
   return (
-    <article className="absolute right-3 bottom-3 left-3 flex max-w-md border border-border bg-surface shadow-lg sm:left-auto sm:w-96">
+    <article className="absolute right-3 bottom-3 left-3 flex max-w-md rounded-md border border-border bg-surface shadow-lg sm:left-auto sm:w-96">
       {point.image ? (
         // Photo hébergée chez Cloudinary : `next/image` exigerait de déclarer
         // le domaine, pour une vignette déjà dimensionnée par l'hébergeur.

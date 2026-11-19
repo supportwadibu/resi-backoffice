@@ -21,7 +21,7 @@ import {
  */
 
 const OVERLAY_BUTTON =
-  "inline-flex size-10 shrink-0 items-center justify-center bg-overlay/45 text-on-overlay backdrop-blur-sm transition hover:bg-overlay/70 focus-visible:outline-2 focus-visible:outline-on-overlay";
+  "inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-overlay/45 text-on-overlay backdrop-blur-sm transition hover:bg-overlay/70 focus-visible:outline-2 focus-visible:outline-on-overlay";
 
 /** Au-delà, les segments seraient trop fins pour se lire : le compteur suffit. */
 const MAX_SEGMENTS = 16;
@@ -47,7 +47,7 @@ export function PhotoGallery({ images, label = "Photos du logement" }: { images:
         index={index}
         onIndexChange={setIndex}
         onExpand={() => setFullscreen(true)}
-        className="h-72 border border-border sm:h-96 lg:h-full"
+        className="h-72 overflow-hidden rounded-md border border-border sm:h-96 lg:h-full"
       />
       {count > 1 && (
         <Filmstrip
@@ -245,7 +245,7 @@ function Carousel({
 
       <div className="pointer-events-none absolute inset-x-3 bottom-3 flex items-end justify-between gap-2">
         {showCounter ? (
-          <span className="bg-overlay/45 px-2 py-1 text-xs font-medium text-on-overlay tabular-nums backdrop-blur-sm">
+          <span className="rounded-full bg-overlay/45 px-2.5 py-1 text-xs font-medium text-on-overlay tabular-nums backdrop-blur-sm">
             {String(index + 1).padStart(2, "0")}
             <span className="text-on-overlay/60"> / {String(count).padStart(2, "0")}</span>
           </span>
@@ -305,7 +305,7 @@ function Filmstrip({
             onClick={() => onSelect(i)}
             aria-label={`Photo ${i + 1}`}
             aria-current={active ? "true" : undefined}
-            className={`relative shrink-0 overflow-hidden bg-overlay outline-offset-2 transition ${thumbClassName} ${
+            className={`relative shrink-0 overflow-hidden rounded-sm bg-overlay outline-offset-2 transition ${thumbClassName} ${
               active ? `outline-2 ${ring}` : "opacity-50 hover:opacity-100 focus-visible:opacity-100"
             }`}
           >

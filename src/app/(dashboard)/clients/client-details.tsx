@@ -63,7 +63,7 @@ export function ClientDetails({ client }: { client: PlatformClient }) {
                   <li key={owner.id}>
                     <Link
                       href={`/proprietaires/${owner.id}`}
-                      className="inline-flex items-center gap-2 border border-border px-3 py-1.5 text-sm hover:bg-background"
+                      className="inline-flex items-center gap-2 rounded-full border border-border px-3.5 py-1.5 text-sm hover:bg-background"
                     >
                       {owner.full_name}
                     </Link>
@@ -81,7 +81,7 @@ export function ClientDetails({ client }: { client: PlatformClient }) {
             {client.properties.length === 0 ? (
               <p className="text-sm text-muted">Aucun séjour enregistré.</p>
             ) : (
-              <ul className="divide-y divide-border border border-border">
+              <ul className="divide-y divide-border overflow-hidden rounded-md border border-border">
                 {client.properties.map(({ property, owner_id: ownerId, stays, last_stay_at: lastStay }) => (
                   <li key={property.id} className="flex items-center gap-3 p-3">
                     {property.image ? (

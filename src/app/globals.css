@@ -1,50 +1,61 @@
 @import "tailwindcss";
 
 /*
- * Jetons de couleur. Les composants n'emploient que ces noms (bg-surface,
- * text-muted, text-accent-green…), jamais une teinte littérale : les deux modes
- * restent ainsi lisibles sans qu'un écran ait à y penser.
+ * Jetons de couleur, recopiés de `mobile/lib/core/theme/resi_tokens.dart` :
+ * le backoffice porte la même identité que les deux applis — crème en clair,
+ * prune en sombre. Une teinte changée là-bas se reporte ici à la main. Les
+ * composants n'emploient que ces noms (bg-surface, text-muted…), jamais une
+ * teinte littérale.
  *
- * Deux familles :
- * - l'interface (fond, texte, boutons) est en noir et blanc, et `primary`
- *   s'inverse d'un mode à l'autre — bouton noir sur fond clair, blanc sur
- *   fond noir ;
- * - les accents (violet, vert, rouge, bleu, ambre) servent aux statistiques,
- *   icônes et badges. Chacun a une variante `-soft` pour le fond d'une
- *   pastille ou d'une tuile, avec le ton plein posé dessus. En mode sombre,
- *   le ton plein s'éclaircit : un violet foncé sur fond noir manquerait de
- *   contraste.
+ * Trois familles :
+ * - l'interface (fond, texte, boutons) : `primary` s'inverse d'un mode à
+ *   l'autre — bouton noir sur crème, blanc sur prune ;
+ * - deux accents de surface, pas plus : `lavender` et `sand`, identiques
+ *   dans les deux modes, avec leur texte `on-lavender` / `on-sand` ; une
+ *   tuile prend l'un des deux ou reste neutre ;
+ * - les accents de statut (violet, vert, rouge, bleu, ambre), réservés aux
+ *   badges, pastilles d'icône et graphiques, chacun avec sa variante `-soft`.
  *
- * `danger` est l'alias sémantique du rouge pour les erreurs : un écran
- * d'erreur ne doit pas dépendre du choix de couleur d'un graphique.
+ * `danger` est l'alias sémantique du rouge pour les erreurs.
  *
  * Chaque jeton porte ses deux valeurs dans `light-dark(clair, sombre)` ;
  * `color-scheme` tranche. Sans choix enregistré, `light dark` suit le
- * système ; `data-theme` sur `<html>` (cookie `resi_theme`, posé par le
- * layout racine) force l'un des deux. `color-scheme` bascule du même coup les
- * contrôles natifs : barres de défilement, calendrier des champs date.
+ * système ; `data-theme` sur `<html>` (cookie `resi_theme`) force l'un des
+ * deux.
  */
 :root {
   color-scheme: light dark;
 
-  --background: light-dark(#fafafa, #000000);
-  --surface: light-dark(#ffffff, #121212);
-  --foreground: light-dark(#0a0a0a, #fafafa);
-  --muted: light-dark(#5f5f66, #a1a1a8);
-  --border: light-dark(#e5e5e8, #27272a);
-  --primary: light-dark(#0a0a0a, #fafafa);
-  --primary-foreground: light-dark(#ffffff, #0a0a0a);
+  --background: light-dark(#fbf6f0, #07050b);
+  --surface: light-dark(#ffffff, #16101c);
+  --foreground: light-dark(#0b0b0f, #f5f3f7);
+  --muted: light-dark(#625c6a, #b0a8ba);
+  --border: light-dark(#e7ded3, #2a2232);
+  --primary: light-dark(#0b0b0f, #f5f3f7);
+  --primary-foreground: light-dark(#ffffff, #0b0b0f);
 
-  --accent-violet: light-dark(#6d28d9, #a78bfa);
-  --accent-violet-soft: light-dark(#f3effd, #231a3a);
+  --lavender: #c9c2ff;
+  --on-lavender: #14112a;
+  --sand: #fde9b9;
+  --on-sand: #2e2205;
+
+  /* Verre de ce qui flotte (en-tête, toasts) : blanc laiteux en clair,
+     prune fumée en sombre. */
+  --glass: light-dark(rgb(255 255 255 / 0.78), rgb(36 26 46 / 0.55));
+  --glass-border: light-dark(rgb(255 255 255 / 0.95), rgb(255 255 255 / 0.12));
+  /* Lueur prune du haut de page en sombre ; transparente en clair. */
+  --glow: light-dark(transparent, #2e1838);
+
+  --accent-violet: light-dark(#4b3fc4, #c9c2ff);
+  --accent-violet-soft: light-dark(#ece8ff, #2a2340);
   --accent-green: light-dark(#15803d, #4ade80);
-  --accent-green-soft: light-dark(#ecf8f0, #0f2a1a);
+  --accent-green-soft: light-dark(#e8f5ec, #0f2a1a);
   --accent-red: light-dark(#b42318, #fda29b);
   --accent-red-soft: light-dark(#fef3f2, #3a1512);
-  --accent-blue: light-dark(#1d4ed8, #93b4fd);
-  --accent-blue-soft: light-dark(#eef3fe, #14203d);
-  --accent-amber: light-dark(#b45309, #fbbf24);
-  --accent-amber-soft: light-dark(#fdf6e9, #33240a);
+  --accent-blue: light-dark(#3b4fc4, #b4c0ff);
+  --accent-blue-soft: light-dark(#eceffe, #1c2140);
+  --accent-amber: light-dark(#8a5a00, #fde9b9);
+  --accent-amber-soft: light-dark(#fde9b9, #3a2e14);
 
   /* Texte posé sur une photo assombrie : identique dans les deux modes,
      puisque le voile noir ne change pas. */
@@ -85,6 +96,13 @@
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
 
+  --color-lavender: var(--lavender);
+  --color-on-lavender: var(--on-lavender);
+  --color-sand: var(--sand);
+  --color-on-sand: var(--on-sand);
+  --color-glass: var(--glass);
+  --color-glass-border: var(--glass-border);
+
   --color-accent-violet: var(--accent-violet);
   --color-accent-violet-soft: var(--accent-violet-soft);
   --color-accent-green: var(--accent-green);
@@ -102,20 +120,34 @@
   --color-danger: var(--accent-red);
   --color-danger-surface: var(--accent-red-soft);
 
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-urbanist);
   --font-mono: var(--font-geist-mono);
 }
 
 /*
- * Angles droits partout : l'échelle d'arrondis de Tailwind est retirée, si
- * bien qu'un `rounded-md` ajouté par habitude ne produit aucun style.
+ * Échelle d'arrondis des applis (`AppRadius`), et elle seule : l'échelle de
+ * Tailwind est retirée, si bien qu'un `rounded-lg` ajouté par habitude ne
+ * produit pas un rayon étranger au système.
+ *   xs 8   badges carrés, cases à cocher, squelettes
+ *   sm 14  pastilles carrées, vignettes
+ *   md 20  champs, cartes, sections, tableaux, toasts, listes déroulantes
+ *   lg 30  dialogues
+ *   full   boutons, puces, badges, boutons icône, avatars
  */
 @theme {
   --radius-*: initial;
+  --radius-xs: 8px;
+  --radius-sm: 14px;
+  --radius-md: 20px;
+  --radius-lg: 30px;
 }
 
 body {
-  background: var(--background);
+  /* Lueur prune discrète depuis le coin haut gauche en sombre : un halo, pas
+     une forme. Transparente en clair, où le crème reste nu. */
+  background:
+    radial-gradient(120% 60% at 0% 0%, var(--glow), transparent 60%) fixed,
+    var(--background);
   color: var(--foreground);
 }
 
@@ -123,7 +155,7 @@ body {
  * Liste déroulante des `<select>`. Native, elle est dessinée par le système
  * (Segoe UI sous Windows), hors de portée de la police et des jetons. Le
  * `<select>` personnalisable (`appearance: base-select`) la rend dans la
- * page : même police, mêmes couleurs, angles droits. Les navigateurs qui ne
+ * page : même police, mêmes couleurs, mêmes arrondis. Les navigateurs qui ne
  * le connaissent pas gardent la liste native, sans rien perdre d'autre.
  *
  * Hors couche, volontairement : la classe `appearance-none` du composant
@@ -145,8 +177,7 @@ body {
   ::picker(select) {
     margin-block: 0.25rem;
     border: 1px solid var(--border);
-    /* Remet à zéro l'arrondi par défaut du navigateur : aucun angle arrondi. */
-    border-radius: 0;
+    border-radius: var(--radius-md);
     background: var(--surface);
     color: var(--foreground);
     padding-block: 0.25rem;
@@ -155,6 +186,8 @@ body {
 
   option {
     gap: 0.5rem;
+    margin-inline: 0.25rem;
+    border-radius: var(--radius-xs);
     padding: 0.5rem 0.75rem;
     font-size: 0.875rem;
   }

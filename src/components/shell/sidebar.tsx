@@ -30,7 +30,8 @@ export function Sidebar({ defaultCollapsed }: { defaultCollapsed: boolean }) {
 
   return (
     <aside
-      className={`hidden shrink-0 flex-col overflow-hidden border-r border-border bg-surface transition-[width] duration-200 motion-reduce:transition-none lg:flex ${
+      // Posée sur le fond, sans filet : seule la pilule du lien actif la dessine.
+      className={`hidden shrink-0 flex-col overflow-hidden transition-[width] duration-200 motion-reduce:transition-none lg:flex ${
         collapsed ? "w-16" : "w-64"
       }`}
     >
@@ -42,7 +43,7 @@ export function Sidebar({ defaultCollapsed }: { defaultCollapsed: boolean }) {
             aria-label={label}
             aria-expanded={!collapsed}
             title={label}
-            className={`p-2 text-muted hover:bg-background hover:text-foreground ${collapsed ? "" : "-mr-2"}`}
+            className={`rounded-full p-2 text-muted hover:bg-surface hover:text-foreground ${collapsed ? "" : "-mr-2"}`}
           >
             {collapsed ? (
               <PanelLeftOpen aria-hidden className="size-4" />
@@ -69,7 +70,7 @@ export function Sidebar({ defaultCollapsed }: { defaultCollapsed: boolean }) {
 export function SidebarBrand({ children, actions }: { children?: ReactNode; actions?: ReactNode }) {
   return (
     <div
-      className={`flex h-16 shrink-0 items-center gap-2 border-b border-border ${
+      className={`flex h-16 shrink-0 items-center gap-2 ${
         children ? "justify-between px-6" : "justify-center"
       }`}
     >

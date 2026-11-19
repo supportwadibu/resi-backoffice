@@ -179,7 +179,7 @@ function IdDocumentImage({ label, url }: { label: string; url: string | null }) 
     <figure className="flex flex-col gap-2">
       <figcaption className="text-sm text-muted">{label}</figcaption>
       {url ? (
-        <a href={url} target="_blank" rel="noreferrer" className="block border border-border bg-background">
+        <a href={url} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-sm border border-border bg-background">
           {/* eslint-disable-next-line @next/next/no-img-element -- voir le commentaire ci-dessus */}
           <img src={url} alt={`Pièce d'identité, ${label.toLowerCase()}`} className="max-h-72 w-full object-contain" />
         </a>

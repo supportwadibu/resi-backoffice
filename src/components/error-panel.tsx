@@ -10,8 +10,8 @@ import { Button } from "./button";
  */
 export function ErrorPanel({ reset }: { reset: () => void }) {
   return (
-    <div className="flex gap-4 border border-border bg-surface p-6">
-      <span className="flex size-10 shrink-0 items-center justify-center bg-danger-surface text-danger">
+    <div className="flex gap-4 rounded-md border border-border bg-surface p-6">
+      <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-danger-surface text-danger">
         <TriangleAlert aria-hidden className="size-5" />
       </span>
       <div>

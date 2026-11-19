@@ -49,10 +49,12 @@ export function Section({
   className?: string;
 }) {
   return (
-    <section className={`border border-border bg-surface ${className}`}>
+    <section className={`rounded-md border border-border bg-surface ${className}`}>
       <div className="flex items-center justify-between gap-2 border-b border-border px-4 py-3">
         <h2 className="flex items-center gap-2 font-semibold">
-          {Icon && <Icon aria-hidden className="size-4 shrink-0 text-muted" />}
+          {Icon && <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-background text-muted">
+            <Icon aria-hidden className="size-4" />
+          </span>}
           {title}
         </h2>
         {actions}
@@ -84,8 +86,8 @@ export function EmptyState({
   icon?: LucideIcon;
 }) {
   return (
-    <div className="flex flex-col items-center gap-3 border border-border bg-surface p-8 text-center text-sm text-muted">
-      <span className="flex size-10 items-center justify-center border border-border bg-background">
+    <div className="flex flex-col items-center gap-3 rounded-md border border-border bg-surface p-8 text-center text-sm text-muted">
+      <span className="flex size-10 items-center justify-center rounded-full bg-background">
         <Icon aria-hidden className="size-5" />
       </span>
       <p>{children}</p>

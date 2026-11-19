@@ -94,7 +94,7 @@ export function FormDialog<T>({
             {children}
           </fieldset>
           {error && (
-            <p role="alert" className="bg-danger-surface px-3 py-2 text-sm text-danger">
+            <p role="alert" className="rounded-sm bg-danger-surface px-3 py-2 text-sm text-danger">
               {error}
             </p>
           )}

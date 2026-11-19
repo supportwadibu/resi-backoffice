@@ -31,7 +31,7 @@ export function FilterBar({ path, active, scroll = true, children }: FilterBarPr
     <Form
       action={path}
       scroll={scroll}
-      className="mb-4 flex flex-wrap items-end gap-3 border border-border bg-surface p-3 *:min-w-40 *:flex-1 sm:*:flex-none"
+      className="mb-4 flex flex-wrap items-end gap-3 rounded-md border border-border bg-surface p-3 *:min-w-40 *:flex-1 sm:*:flex-none"
     >
       {children}
       <div className="flex gap-2">
@@ -43,7 +43,7 @@ export function FilterBar({ path, active, scroll = true, children }: FilterBarPr
           <Link
             href={path}
             scroll={scroll}
-            className="inline-flex items-center gap-2 border border-border px-4 py-2 text-sm text-muted hover:bg-background hover:text-foreground"
+            className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-2 text-sm text-muted hover:bg-background hover:text-foreground"
           >
             <X aria-hidden className="size-4" />
             Réinitialiser

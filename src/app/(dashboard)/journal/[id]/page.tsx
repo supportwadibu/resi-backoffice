@@ -44,7 +44,7 @@ export default async function TraceDetailPage({ params }: PageProps<"/journal/[i
             ]}
           />
           {error.stack && (
-            <pre className="mt-4 overflow-x-auto border border-border bg-background p-3 font-mono text-xs whitespace-pre">
+            <pre className="mt-4 overflow-x-auto rounded-sm border border-border bg-background p-3 font-mono text-xs whitespace-pre">
               {error.stack}
             </pre>
           )}

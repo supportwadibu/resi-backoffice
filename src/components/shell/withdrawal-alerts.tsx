@@ -81,11 +81,11 @@ export function WithdrawalAlerts() {
       href="/retraits?status=pending"
       title={label}
       aria-label={label}
-      className="relative flex size-9 items-center justify-center border border-border text-muted hover:text-foreground"
+      className="relative flex size-9 items-center justify-center rounded-full border border-border bg-surface text-muted hover:text-foreground"
     >
       <Icon aria-hidden className="size-4" />
       {count > 0 && (
-        <span className="absolute -top-1.5 -right-1.5 min-w-5 bg-accent-amber px-1 text-center text-[11px] font-semibold leading-5 text-background tabular-nums">
+        <span className="absolute -top-1.5 -right-1.5 min-w-5 rounded-full bg-accent-amber px-1 text-center text-[11px] font-semibold leading-5 text-background tabular-nums">
           {count > 99 ? "99+" : count}
         </span>
       )}

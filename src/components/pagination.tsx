@@ -53,7 +53,7 @@ function PageLink({
   label: string;
   children: React.ReactNode;
 }) {
-  const className = "flex size-9 items-center justify-center border border-border bg-surface";
+  const className = "flex size-9 items-center justify-center rounded-full border border-border bg-surface";
   if (disabled) {
     return (
       <span aria-disabled className={`${className} opacity-40`} title={label}>

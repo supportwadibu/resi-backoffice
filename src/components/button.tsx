@@ -18,11 +18,12 @@ const VARIANTS: Record<Variant, string> = {
  * écrite en dernier.
  */
 const SIZES: Record<Size, string> = {
-  md: "px-4 py-2",
-  sm: "px-2 py-1",
+  md: "px-5 py-2",
+  sm: "px-3 py-1",
 };
 
-const BASE = "inline-flex items-center justify-center gap-2 text-sm font-medium";
+// Pilule, comme `AppButton` des applis.
+const BASE = "inline-flex items-center justify-center gap-2 rounded-full text-sm font-medium transition-colors";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;

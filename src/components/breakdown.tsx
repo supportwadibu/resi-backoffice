@@ -51,7 +51,7 @@ export function Breakdown<K extends string>({
   const total = rows.reduce((sum, row) => sum + row.count, 0);
 
   return (
-    <section className="border border-border bg-surface p-4">
+    <section className="rounded-md border border-border bg-surface p-4">
       <h2 className="flex items-center gap-2 text-sm font-semibold">
         <Icon aria-hidden className="size-4 shrink-0 text-muted" />
         {title}
@@ -70,9 +70,9 @@ export function Breakdown<K extends string>({
               <span className="tabular-nums">{formatNumber(row.count)}</span>
             </div>
             {/* Part du total en jauge fine : la longueur porte l'information. */}
-            <div aria-hidden className="mt-1 h-1 bg-background">
+            <div aria-hidden className="mt-1 h-1.5 overflow-hidden rounded-full bg-background">
               <div
-                className={`h-full ${tones ? BAR_TONES[tones[row.key]] : "bg-primary"}`}
+                className={`h-full rounded-full ${tones ? BAR_TONES[tones[row.key]] : "bg-primary"}`}
                 style={{ width: total > 0 ? `${(row.count / total) * 100}%` : 0 }}
               />
             </div>

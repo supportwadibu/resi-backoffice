@@ -53,8 +53,8 @@ export function StayTypeBreakdown({ data, title }: { data: Breakdown; title?: st
                     <span>{formatNumber(bucket.bookings)}</span>
                     <span className="text-muted">{bucket.share_percent.toString().replace(".", ",")} %</span>
                   </div>
-                  <div aria-hidden className="mt-1 h-1 bg-background">
-                    <div className="h-full bg-primary" style={{ width: `${bucket.share_percent}%` }} />
+                  <div aria-hidden className="mt-1 h-1.5 overflow-hidden rounded-full bg-background">
+                    <div className="h-full rounded-full bg-primary" style={{ width: `${bucket.share_percent}%` }} />
                   </div>
                 </td>
                 <td className="py-2 pr-4 text-right whitespace-nowrap tabular-nums">{formatPrice(bucket.revenue)}</td>

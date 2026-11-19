@@ -4,8 +4,8 @@ import Link from "next/link";
 /** Fiche introuvable (404 de l'API) ou adresse inconnue : la navigation reste affichée. */
 export default function DashboardNotFound() {
   return (
-    <div className="flex gap-4 border border-border bg-surface p-6">
-      <span className="flex size-10 shrink-0 items-center justify-center border border-border bg-background text-muted">
+    <div className="flex gap-4 rounded-md border border-border bg-surface p-6">
+      <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-background text-muted">
         <SearchX aria-hidden className="size-5" />
       </span>
       <div>

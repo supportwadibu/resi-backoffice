@@ -30,7 +30,7 @@ export function IconButton({
       type={type}
       aria-label={label}
       title={label}
-      className={`inline-flex size-8 shrink-0 items-center justify-center disabled:cursor-not-allowed disabled:opacity-60 ${TONES[tone]} ${className}`}
+      className={`inline-flex size-8 shrink-0 rounded-full transition-colors items-center justify-center disabled:cursor-not-allowed disabled:opacity-60 ${TONES[tone]} ${className}`}
       {...rest}
     >
       <Icon aria-hidden className="size-4" />

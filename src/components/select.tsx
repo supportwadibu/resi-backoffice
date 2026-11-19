@@ -49,7 +49,7 @@ export function Select({
           id={id}
           aria-invalid={error ? true : undefined}
           aria-describedby={note ? noteId : undefined}
-          className={`w-full appearance-none border bg-background py-2 pr-9 pl-3 text-sm outline-none focus:border-primary disabled:cursor-not-allowed disabled:opacity-60 ${
+          className={`w-full appearance-none rounded-md border bg-surface py-2 pr-9 pl-3.5 text-sm outline-none focus:border-primary disabled:cursor-not-allowed disabled:opacity-60 ${
             error ? "border-danger" : "border-border"
           } ${className}`}
           {...rest}
