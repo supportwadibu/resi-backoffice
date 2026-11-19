@@ -2,16 +2,17 @@ import './globals.css';
 
 import type { Metadata } from 'next';
 import {
-  Geist,
   Geist_Mono,
+  Urbanist,
 } from 'next/font/google';
 import { cookies } from 'next/headers';
 
 import { Toaster } from '@/components/toast';
 import { parseTheme, THEME_COOKIE } from '@/lib/theme';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Urbanist : la police des deux applis mobiles, pour une même identité.
+const urbanist = Urbanist({
+  variable: "--font-urbanist",
   subsets: ["latin"],
 });
 
@@ -33,7 +34,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="fr"
       data-theme={theme === "system" ? undefined : theme}
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${urbanist.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body
         className="min-h-full flex flex-col font-sans"

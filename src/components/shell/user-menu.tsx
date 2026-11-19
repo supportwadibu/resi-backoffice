@@ -11,7 +11,7 @@ export function UserMenu({ user }: { user: SessionUser }) {
       <Link href="/compte" title="Mon compte" className="flex min-w-0 items-center gap-3 hover:text-foreground">
         <span
           aria-hidden
-          className="flex size-9 shrink-0 items-center justify-center border border-border bg-background text-sm font-semibold"
+          className="flex size-9 shrink-0 items-center justify-center rounded-full bg-lavender text-sm font-semibold text-on-lavender"
         >
           {initials(user.full_name)}
         </span>

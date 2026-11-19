@@ -126,6 +126,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/">) {
             label="Encaissé ce mois"
             value={formatPrice(resi.earned.this_month)}
             icon={Wallet}
+            surface="lavender"
             accent="green"
             note={
               resiGrowth === null ? (
@@ -202,6 +203,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/">) {
             label="Chiffre d'affaires des propriétaires"
             value={formatPrice(stats.revenue.current_month)}
             icon={Wallet}
+            surface="sand"
             accent="green"
             note={
               growth === null ? (

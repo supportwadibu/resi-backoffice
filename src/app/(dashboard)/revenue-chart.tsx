@@ -61,7 +61,7 @@ export function RevenueChart({ data }: { data: RevenuePoint[] }) {
                     className="flex h-full w-full items-end justify-center outline-none focus-visible:bg-background"
                   >
                     <span
-                      className={`block w-full max-w-6 bg-accent-violet transition-opacity ${
+                      className={`block w-full max-w-6 rounded-t-xs bg-accent-violet transition-opacity ${
                         active !== null && active !== index ? "opacity-50" : ""
                       }`}
                       style={{ height: `${ratio * 100}%`, minHeight: point.revenue > 0 ? 2 : 0 }}
@@ -81,7 +81,7 @@ export function RevenueChart({ data }: { data: RevenuePoint[] }) {
                   {active === index && (
                     <div
                       role="presentation"
-                      className={`pointer-events-none absolute z-10 border border-border bg-surface px-3 py-2 text-xs shadow-lg ${
+                      className={`pointer-events-none absolute z-10 rounded-md border border-border bg-surface px-3 py-2 text-xs shadow-lg ${
                         index > data.length / 2 ? "right-0" : "left-0"
                       }`}
                       style={{ bottom: `calc(${Math.min(ratio, 0.85) * 100}% + 8px)` }}

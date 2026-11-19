@@ -74,7 +74,7 @@ export function Dialog({
       onClick={(event) => {
         if (dismissible && event.target === event.currentTarget) onClose();
       }}
-      className={`m-auto w-[calc(100%-2rem)] max-w-md border border-border bg-surface p-0 text-foreground shadow-xl backdrop:bg-overlay/60 ${className}`}
+      className={`m-auto w-[calc(100%-2rem)] max-w-md rounded-lg border border-border bg-surface p-0 text-foreground shadow-xl backdrop:bg-overlay/50 backdrop:backdrop-blur-sm ${className}`}
     >
       <div className="p-6">
         <div className="flex items-start justify-between gap-4">
@@ -86,7 +86,7 @@ export function Dialog({
               type="button"
               onClick={onClose}
               aria-label="Fermer"
-              className="-m-1 p-1 text-muted hover:text-foreground"
+              className="-m-1.5 flex size-9 shrink-0 items-center justify-center rounded-full text-muted hover:bg-background hover:text-foreground"
             >
               <X aria-hidden className="size-5" />
             </button>

@@ -28,7 +28,7 @@ export function ThemeSwitcher({ initial }: { initial: ThemePreference }) {
   };
 
   return (
-    <div role="group" aria-label="Thème" className="flex border border-border">
+    <div role="group" aria-label="Thème" className="flex gap-0.5 rounded-full border border-border p-0.5">
       {OPTIONS.map((option) => {
         const active = theme === option.value;
         return (
@@ -39,7 +39,7 @@ export function ThemeSwitcher({ initial }: { initial: ThemePreference }) {
             aria-pressed={active}
             aria-label={option.label}
             title={option.label}
-            className={`p-1.5 ${
+            className={`rounded-full p-1.5 ${
               active ? "bg-primary/10 text-foreground" : "text-muted hover:bg-background hover:text-foreground"
             }`}
           >

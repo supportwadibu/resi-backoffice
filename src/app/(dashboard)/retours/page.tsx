@@ -61,7 +61,7 @@ export default async function RetoursPage({ searchParams }: PageProps<"/retours"
             <li key={feedback.id}>
               <Link
                 href={`/retours/${feedback.id}`}
-                className="block border border-border bg-surface p-4 hover:border-primary"
+                className="block rounded-md border border-border bg-surface p-4 hover:border-primary"
               >
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <h2 className="font-medium">{feedback.title}</h2>

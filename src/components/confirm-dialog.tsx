@@ -94,7 +94,7 @@ export function ConfirmDialog({
       {error && (
         <p
           role="alert"
-          className="bg-danger-surface px-3 py-2 text-sm text-danger"
+          className="rounded-sm bg-danger-surface px-3 py-2 text-sm text-danger"
         >
           {error}
         </p>

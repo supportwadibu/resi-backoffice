@@ -118,7 +118,7 @@ export function SendNotificationButton({
               value={query}
               onChange={(event) => setQuery(event.target.value)}
             />
-            <ul className="max-h-56 overflow-y-auto border border-border">
+            <ul className="max-h-56 overflow-y-auto rounded-md border border-border">
               {visible.length === 0 ? (
                 <li className="px-3 py-2 text-sm text-muted">Aucun propriétaire ne correspond.</li>
               ) : (

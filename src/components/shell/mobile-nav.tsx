@@ -44,7 +44,7 @@ export function MobileNav() {
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Ouvrir le menu"
-        className="-ml-2 p-2 text-muted hover:bg-background hover:text-foreground lg:hidden"
+        className="-ml-2 rounded-full p-2 text-muted hover:bg-surface hover:text-foreground lg:hidden"
       >
         <Menu aria-hidden className="size-5" />
       </button>
@@ -62,7 +62,7 @@ export function MobileNav() {
         onClick={(event) => {
           if (event.target === event.currentTarget) close();
         }}
-        className="m-0 h-dvh max-h-none w-72 max-w-[calc(100%-3rem)] border-r border-border bg-surface p-0 text-foreground backdrop:bg-overlay/60 open:flex open:flex-col lg:hidden"
+        className="m-0 h-dvh max-h-none w-72 max-w-[calc(100%-3rem)] rounded-r-lg bg-background p-0 text-foreground backdrop:bg-overlay/50 backdrop:backdrop-blur-sm open:flex open:flex-col lg:hidden"
       >
         <SidebarBrand
           actions={
@@ -70,7 +70,7 @@ export function MobileNav() {
               type="button"
               onClick={close}
               aria-label="Fermer le menu"
-              className="-mr-2 p-2 text-muted hover:text-foreground"
+              className="-mr-2 rounded-full p-2 text-muted hover:bg-surface hover:text-foreground"
             >
               <X aria-hidden className="size-5" />
             </button>

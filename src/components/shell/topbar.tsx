@@ -7,10 +7,14 @@ import { MobileNav } from "./mobile-nav";
 import { UserMenu } from "./user-menu";
 import { WithdrawalAlerts } from "./withdrawal-alerts";
 
-/** En-tête du tableau de bord, fixe au-dessus du contenu qui défile. */
+/**
+ * En-tête du tableau de bord, fixe au-dessus du contenu qui défile. Posé sur
+ * le fond, sans filet : il ne recouvre pas le contenu, qui défile dessous
+ * dans `<main>`.
+ */
 export function Topbar({ user, theme }: { user: SessionUser; theme: ThemePreference }) {
   return (
-    <header className="flex h-16 shrink-0 items-center gap-3 border-b border-border bg-surface px-4 md:px-8">
+    <header className="flex h-16 shrink-0 items-center gap-3 px-4 md:px-8">
       <MobileNav />
       <Breadcrumb />
       <div className="ml-auto flex items-center gap-3 sm:gap-4">

@@ -19,7 +19,7 @@ export function NavLinks({ collapsed = false, onNavigate }: { collapsed?: boolea
       {NAV_GROUPS.map((group, index) => (
         <div key={group.label}>
           {collapsed ? (
-            index > 0 && <div aria-hidden className="mx-2 mb-3 border-t border-border" />
+            index > 0 && <div aria-hidden className="mx-3 mb-3 border-t border-border" />
           ) : (
             <p className="px-3 pb-1.5 text-xs font-medium tracking-wider whitespace-nowrap text-muted uppercase">
               {group.label}
@@ -35,12 +35,13 @@ export function NavLinks({ collapsed = false, onNavigate }: { collapsed?: boolea
                     onClick={onNavigate}
                     aria-current={active ? "page" : undefined}
                     title={collapsed ? item.label : undefined}
-                    className={`flex items-center gap-3 border-l-2 py-2 text-sm whitespace-nowrap ${
+                    // Pilule, et lien actif en `primary` : la grammaire des puces des applis.
+                    className={`flex items-center gap-3 rounded-full py-2 text-sm whitespace-nowrap transition-colors ${
                       collapsed ? "justify-center" : "px-3"
                     } ${
                       active
-                        ? "border-primary bg-primary/10 font-medium text-foreground"
-                        : "border-transparent text-muted hover:bg-background hover:text-foreground"
+                        ? "bg-primary font-medium text-primary-foreground"
+                        : "text-muted hover:bg-surface hover:text-foreground"
                     }`}
                   >
                     <item.icon aria-hidden className="size-4 shrink-0" />

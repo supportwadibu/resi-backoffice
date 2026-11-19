@@ -83,13 +83,13 @@ export function SubscriptionRevenueChart({ data }: { data: RevenueMonth[] }) {
                   >
                     {point.expected > 0 && (
                       <span
-                        className={`block w-full max-w-6 border border-accent-green bg-accent-green-soft transition-opacity ${dimmed}`}
+                        className={`block w-full max-w-6 rounded-t-xs border border-accent-green bg-accent-green-soft transition-opacity ${dimmed}`}
                         style={{ height: `${expectedRatio * 100}%`, minHeight: 2 }}
                       />
                     )}
                     {point.earned > 0 && (
                       <span
-                        className={`block w-full max-w-6 bg-accent-green transition-opacity ${dimmed}`}
+                        className={`block w-full max-w-6 rounded-t-xs bg-accent-green transition-opacity ${dimmed}`}
                         style={{ height: `${earnedRatio * 100}%`, minHeight: 2 }}
                       />
                     )}
@@ -98,7 +98,7 @@ export function SubscriptionRevenueChart({ data }: { data: RevenueMonth[] }) {
                   {active === index && (
                     <div
                       role="presentation"
-                      className={`pointer-events-none absolute z-10 border border-border bg-surface px-3 py-2 text-xs shadow-lg ${
+                      className={`pointer-events-none absolute z-10 rounded-md border border-border bg-surface px-3 py-2 text-xs shadow-lg ${
                         index > data.length / 2 ? "right-0" : "left-0"
                       }`}
                       style={{ bottom: `calc(${Math.min(earnedRatio + expectedRatio, 0.85) * 100}% + 8px)` }}

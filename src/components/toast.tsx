@@ -6,10 +6,10 @@ import { Toaster as SonnerToaster, toast } from "sonner";
 type Tone = "success" | "error" | "info" | "warning";
 
 const TONES: Record<Tone, { icon: typeof Info; className: string }> = {
-  success: { icon: CircleCheck, className: "text-accent-green" },
-  error: { icon: CircleAlert, className: "text-danger" },
-  info: { icon: Info, className: "text-accent-blue" },
-  warning: { icon: TriangleAlert, className: "text-accent-amber" },
+  success: { icon: CircleCheck, className: "bg-accent-green-soft text-accent-green" },
+  error: { icon: CircleAlert, className: "bg-danger-surface text-danger" },
+  info: { icon: Info, className: "bg-accent-blue-soft text-accent-blue" },
+  warning: { icon: TriangleAlert, className: "bg-accent-amber-soft text-accent-amber" },
 };
 
 interface NotifyOptions {
@@ -82,10 +82,13 @@ function ToastCard({
       role={tone === "error" ? "alert" : "status"}
       // `font-sans` : le conteneur de Sonner impose sa propre police, dont
       // la carte hériterait sinon.
-      className="flex w-(--width) items-start gap-3 border border-border bg-surface p-4 font-sans text-foreground shadow-lg"
+      // Carte de verre et disque coloré selon le ton, comme `AppToast`.
+      className="flex w-(--width) items-start gap-3 rounded-md border border-glass-border bg-glass p-3 font-sans text-foreground shadow-lg backdrop-blur-xl"
     >
-      <Icon aria-hidden className={`mt-0.5 size-5 shrink-0 ${className}`} />
-      <div className="min-w-0 flex-1">
+      <span className={`flex size-9 shrink-0 items-center justify-center rounded-full ${className}`}>
+        <Icon aria-hidden className="size-4" />
+      </span>
+      <div className="min-w-0 flex-1 pt-1.5">
         <p className="text-sm font-medium">{title}</p>
         {description && (
           <p className="mt-1 text-sm text-muted">{description}</p>
@@ -95,7 +98,7 @@ function ToastCard({
         type="button"
         onClick={() => toast.dismiss(id)}
         aria-label="Fermer la notification"
-        className="shrink-0 text-muted hover:text-foreground"
+        className="mt-1.5 shrink-0 rounded-full text-muted hover:text-foreground"
       >
         <X aria-hidden className="size-4" />
       </button>

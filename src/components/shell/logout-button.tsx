@@ -25,7 +25,7 @@ export function LogoutButton() {
         type="button"
         onClick={() => setOpen(true)}
         title="Se déconnecter"
-        className="flex cursor-pointer items-center gap-2 p-2 text-sm text-muted hover:bg-background hover:text-foreground"
+        className="flex cursor-pointer items-center gap-2 rounded-full p-2 text-sm text-muted hover:bg-surface hover:text-foreground"
       >
         <LogOut aria-hidden className="size-4" />
         <span className="sr-only md:not-sr-only">Se déconnecter</span>
