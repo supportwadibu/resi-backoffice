@@ -53,6 +53,13 @@ import { PlatformMap } from "./platform-map";
 import { RevenueChart } from "./revenue-chart";
 import { SubscriptionRevenueChart, type RevenueMonth } from "./subscription-revenue-chart";
 
+/**
+ * Carte des résidences coupée : elle dérègle l'écran du tableau de bord.
+ * Éteinte, elle n'appelle ni `/admin/residences/map` ni Google Maps — un
+ * encart grisé tient sa place. Repasser à `true` la rallume telle quelle.
+ */
+const MAP_ENABLED = false;
+
 /** Plafond de l'API pour une période de séjours : au-delà, elle répond 422. */
 const MAX_STAY_PERIOD_DAYS = 731;
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -90,10 +97,12 @@ export default async function DashboardPage({ searchParams }: PageProps<"/">) {
     apiFetch<{ data: StayTypeBreakdownData }>("/admin/stats/stay-types", { query: period.query }),
     // Une carte qui échoue ne doit pas emporter le tableau de bord : seules
     // les erreurs de l'API sont rattrapées, la redirection d'un 401 passe.
-    apiFetch<PlatformMapData>("/admin/residences/map").catch((error: unknown) => {
-      if (error instanceof ApiError) return null;
-      throw error;
-    }),
+    MAP_ENABLED
+      ? apiFetch<PlatformMapData>("/admin/residences/map").catch((error: unknown) => {
+          if (error instanceof ApiError) return null;
+          throw error;
+        })
+      : null,
   ]);
 
   const growth = stats.revenue.growth_percent;
@@ -237,7 +246,15 @@ export default async function DashboardPage({ searchParams }: PageProps<"/">) {
       </DashboardGroup>
 
       <DashboardGroup title="Carte des résidences" className="mt-8">
-        {map ? (
+        {!MAP_ENABLED ? (
+          <div aria-disabled="true" className="pointer-events-none select-none opacity-60 grayscale">
+            <Section title="Carte désactivée" icon={MapPinOff}>
+              <div className="flex h-48 items-center justify-center border border-dashed border-border bg-background">
+                <p className="text-sm text-muted">La carte des résidences est momentanément désactivée.</p>
+              </div>
+            </Section>
+          </div>
+        ) : map ? (
           <PlatformMap
             points={map.data}
             withoutCoordinates={map.without_coordinates}
