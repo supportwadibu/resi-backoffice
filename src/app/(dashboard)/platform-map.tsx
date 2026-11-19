@@ -1,6 +1,40 @@
 "use client";
 
-import { MarkerClusterer, type Renderer } from "@googlemaps/markerclusterer";
+import {
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useState,
+  useSyncExternalStore,
+} from 'react';
+
+import {
+  ArrowUpRight,
+  BedDouble,
+  Building2,
+  Expand,
+  type LucideIcon,
+  MapPinOff,
+  TriangleAlert,
+  UserRound,
+  X,
+} from 'lucide-react';
+import Link from 'next/link';
+
+import { Checkbox } from '@/components/checkbox';
+import { Input } from '@/components/input';
+import { PropertyStatusBadge } from '@/components/status-badges';
+import type { MapPoint } from '@/lib/api/types';
+import {
+  formatNumber,
+  formatPrice,
+} from '@/lib/format';
+import { PROPERTY_TYPE_LABELS } from '@/lib/labels';
+import {
+  MarkerClusterer,
+  type Renderer,
+} from '@googlemaps/markerclusterer';
 import {
   AdvancedMarker,
   APIProvider,
@@ -10,34 +44,7 @@ import {
   MapControl,
   useMap,
   useMapsLibrary,
-} from "@vis.gl/react-google-maps";
-import {
-  ArrowUpRight,
-  BedDouble,
-  Building2,
-  Expand,
-  MapPinOff,
-  TriangleAlert,
-  UserRound,
-  X,
-  type LucideIcon,
-} from "lucide-react";
-import Link from "next/link";
-import {
-  useCallback,
-  useDeferredValue,
-  useEffect,
-  useMemo,
-  useState,
-  useSyncExternalStore,
-} from "react";
-
-import { Checkbox } from "@/components/checkbox";
-import { Input } from "@/components/input";
-import { PropertyStatusBadge } from "@/components/status-badges";
-import type { MapPoint } from "@/lib/api/types";
-import { formatNumber, formatPrice } from "@/lib/format";
-import { PROPERTY_TYPE_LABELS } from "@/lib/labels";
+} from '@vis.gl/react-google-maps';
 
 /** Abidjan : centre de départ, avant que la carte ne cadre les lieux. */
 const ABIDJAN = { lat: 5.3364, lng: -3.9772 };
@@ -109,7 +116,7 @@ export function PlatformMap({ points, withoutCoordinates, truncated, apiKey, map
   }
 
   return (
-    <div className="grid border border-border bg-surface lg:h-[600px] lg:grid-cols-[22rem_minmax(0,1fr)]">
+    <div className="grid border border-border bg-surface lg:h-150 lg:grid-cols-[22rem_minmax(0,1fr)]">
       <aside className="flex min-h-0 flex-col border-b border-border lg:border-r lg:border-b-0">
         <div className="flex flex-col gap-3 border-b border-border p-4">
           <Input
@@ -175,7 +182,7 @@ export function PlatformMap({ points, withoutCoordinates, truncated, apiKey, map
         )}
       </aside>
 
-      <div className="relative h-[460px] lg:h-full">
+      <div className="relative h-115 lg:h-full">
         {apiKey && !keyRefused ? (
           <APIProvider apiKey={apiKey} language="fr" region="CI">
             <MapCanvas
