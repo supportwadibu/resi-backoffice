@@ -13,7 +13,7 @@ import { formatDate, formatPrice } from "@/lib/format";
 import { WITHDRAWAL_STATUS_LABELS, toOptions } from "@/lib/labels";
 import { enumParam, pageParam } from "@/lib/search-params";
 
-import { MarkWithdrawalPaid, RejectWithdrawal } from "./withdrawal-actions";
+import { MarkWithdrawalPaid, PayWithdrawalWithWave, RejectWithdrawal } from "./withdrawal-actions";
 import { WithdrawalSettingsButton } from "./withdrawal-settings";
 
 export const metadata: Metadata = { title: "Retraits" };
@@ -35,7 +35,7 @@ export default async function RetraitsPage({ searchParams }: PageProps<"/retrait
     <div>
       <PageHeader
         title="Retraits"
-        description="Demandes de retrait des portefeuilles : à verser par Wave, net des frais de 1 %."
+        description="Demandes de retrait des portefeuilles : versées par Wave, net des frais de 1 %."
         actions={<WithdrawalSettingsButton minimumAmount={settings.minimum_amount} />}
       />
 
@@ -81,6 +81,14 @@ export default async function RetraitsPage({ searchParams }: PageProps<"/retrait
                 {withdrawal.payout_reference && (
                   <div className="mt-1 text-xs text-muted">Réf. {withdrawal.payout_reference}</div>
                 )}
+                {withdrawal.status === "pending" && withdrawal.payout_error && (
+                  <div className="mt-1 max-w-56 text-xs text-danger">
+                    Wave a refusé : {withdrawal.payout_error.message}
+                  </div>
+                )}
+                {withdrawal.status === "processing" && (
+                  <div className="mt-1 max-w-56 text-xs text-muted">Relu automatiquement chez Wave</div>
+                )}
                 {withdrawal.rejection_reason && (
                   <div className="mt-1 max-w-56 text-xs text-muted">{withdrawal.rejection_reason}</div>
                 )}
@@ -89,6 +97,11 @@ export default async function RetraitsPage({ searchParams }: PageProps<"/retrait
               <Cell className="text-right">
                 {withdrawal.status === "pending" && (
                   <RowActions>
+                    <PayWithdrawalWithWave
+                      id={withdrawal.id}
+                      netAmount={withdrawal.net_amount}
+                      payoutPhone={withdrawal.payout_phone}
+                    />
                     <MarkWithdrawalPaid
                       id={withdrawal.id}
                       netAmount={withdrawal.net_amount}

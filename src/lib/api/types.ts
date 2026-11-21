@@ -674,7 +674,8 @@ export interface NotificationCampaign {
 
 // ── Portefeuilles et retraits ──────────────────────────────────────────────
 
-export type WithdrawalStatus = "pending" | "paid" | "rejected";
+/** `processing` : versement Wave lancé, issue pas encore connue. */
+export type WithdrawalStatus = "pending" | "processing" | "paid" | "rejected";
 
 /** Réglages des retraits (`GET /admin/settings/withdrawals`). */
 export interface WithdrawalSettings {
@@ -712,6 +713,8 @@ export interface Withdrawal {
   payout_slot?: number | null;
   status: WithdrawalStatus;
   payout_reference: string | null;
+  /** Dernier refus de Wave lors d'un versement automatique. Absent d'une API antérieure. */
+  payout_error?: { code: string; message: string } | null;
   rejection_reason: string | null;
   processed_at: string | null;
   created_at: string;
