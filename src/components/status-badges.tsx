@@ -154,9 +154,13 @@ export function AccountStatusBadge({
   return <Badge tone={T.done}>Actif</Badge>;
 }
 
-/** À verser attend l'équipe (ambre), versé est abouti, refusé arrêté par une décision. */
+/**
+ * À verser attend l'équipe (ambre), versement en cours chez Wave (violet),
+ * versé est abouti, refusé arrêté par une décision.
+ */
 export const WITHDRAWAL_TONES: Record<WithdrawalStatus, BadgeTone> = {
   pending: T.waiting,
+  processing: T.ongoing,
   paid: T.done,
   rejected: T.stopped,
 };

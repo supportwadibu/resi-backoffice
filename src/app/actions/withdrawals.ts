@@ -17,6 +17,19 @@ export async function markWithdrawalPaid(id: string, payoutReference: string) {
   );
 }
 
+/**
+ * Versement par l'API Payout de Wave. La demande revient versée, rouverte avec
+ * le motif du refus de Wave, ou encore en cours — relue alors toutes les
+ * 5 minutes par l'API.
+ */
+export async function payWithdrawalWithWave(id: string) {
+  return runAction(() =>
+    apiFetch<{ data: Withdrawal }>(`/admin/withdrawals/${encodeURIComponent(id)}/payout`, {
+      method: "POST",
+    }),
+  );
+}
+
 /** Refus motivé : le montant revient au portefeuille du propriétaire. */
 export async function rejectWithdrawal(id: string, rejectionReason: string) {
   return runAction(() =>

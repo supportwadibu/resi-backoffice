@@ -128,6 +128,7 @@ export const SUBSCRIPTION_CANCEL_REASON_LABELS: Record<string, string> = {
 
 export const WITHDRAWAL_STATUS_LABELS: Record<WithdrawalStatus, string> = {
   pending: "À verser",
+  processing: "Versement en cours",
   paid: "Versé",
   rejected: "Refusé",
 };
