@@ -63,9 +63,16 @@ export function MarkRedemptionPaid({
         description={`Confirmez avoir envoyé ${formatPrice(amount)} par Wave au ${payoutPhone}. Le geste est définitif.`}
         submitLabel="Marquer versé"
         successTitle="Retrait marqué versé"
-        onSubmit={(form) => markRedemptionPaid(id, text(form, "payout_reference") || undefined)}
+        onSubmit={(form) => markRedemptionPaid(id, text(form, "payout_reference"))}
       >
-        <Input label="Référence du transfert Wave (facultatif)" name="payout_reference" maxLength={120} />
+        <Input
+          label="Référence du transfert Wave"
+          name="payout_reference"
+          hint="Identifiant de la transaction dans Wave Business, après l'envoi."
+          required
+          minLength={6}
+          maxLength={120}
+        />
       </FormDialog>
     </>
   );

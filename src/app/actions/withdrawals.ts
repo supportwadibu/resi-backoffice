@@ -4,12 +4,15 @@ import { runAction } from "@/lib/api/action";
 import { apiFetch } from "@/lib/api/client";
 import type { Withdrawal, WithdrawalSettings } from "@/lib/api/types";
 
-/** Le transfert Wave est fait : la demande est close, le portefeuille reste débité. */
-export async function markWithdrawalPaid(id: string, payoutReference?: string) {
+/**
+ * Le transfert Wave est fait : la demande est close, le portefeuille reste débité.
+ * La référence de la transaction Wave est exigée par l'API.
+ */
+export async function markWithdrawalPaid(id: string, payoutReference: string) {
   return runAction(() =>
     apiFetch<{ data: Withdrawal }>(`/admin/withdrawals/${encodeURIComponent(id)}/paid`, {
       method: "PATCH",
-      body: payoutReference ? { payout_reference: payoutReference } : {},
+      body: { payout_reference: payoutReference },
     }),
   );
 }

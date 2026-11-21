@@ -19,11 +19,11 @@ export async function cancelSponsorship(id: string, reason: string) {
 }
 
 /** Le transfert Wave est fait : la demande est close, les gains restent débités. */
-export async function markRedemptionPaid(id: string, payoutReference?: string) {
+export async function markRedemptionPaid(id: string, payoutReference: string) {
   return runAction(() =>
     apiFetch<{ data: SponsorshipRedemption }>(
       `/admin/sponsorship-redemptions/${encodeURIComponent(id)}/paid`,
-      { method: "PATCH", body: payoutReference ? { payout_reference: payoutReference } : {} },
+      { method: "PATCH", body: { payout_reference: payoutReference } },
     ),
   );
 }
